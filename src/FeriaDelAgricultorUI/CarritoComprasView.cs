@@ -10,7 +10,7 @@ namespace FeriaDelAgricultorUI
         /// <summary>
         /// Inicializa una nueva instancia de <see cref="CarritoComprasView"/>.
         /// </summary>
-        public CarritoComprasView()
+        public CarritoComprasView(FeriaDelAgricultorController.CarritoService carritoService)
         {
             InitializeComponent();
         }

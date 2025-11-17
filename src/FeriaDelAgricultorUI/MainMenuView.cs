@@ -18,6 +18,7 @@ namespace FeriaDelAgricultorUI
         // Más adelante podremos inyectar servicios de productos y reportes.
 
         private readonly ProductoService productoService;
+        private readonly CarritoService carritoService;
 
         /// <summary>
         /// Este constructor recibe el usuario luego del login.
@@ -33,6 +34,8 @@ namespace FeriaDelAgricultorUI
             this.usuario = usuario;
             this.facturaService = new FacturaService();
             this.productoService = new ProductoService();
+            this.carritoService = new CarritoService();
+
 
             ConfigurarMensajeBienvenida();
         }
@@ -102,7 +105,7 @@ namespace FeriaDelAgricultorUI
         private void btnListaProductores_Click(object sender, EventArgs e)
         {
             //Pasar el servicio al formulario
-            var listaView = new ListaProductoresView(this.productoService);
+            var listaView = new ListaProductoresView(this.productoService, this.carritoService);
             listaView.MdiParent = this;
             listaView.Show();
         }
@@ -113,7 +116,7 @@ namespace FeriaDelAgricultorUI
         /// </summary>
         private void btnCarrito_Click(object sender, EventArgs e)
         {
-            var carritoView = new CarritoComprasView();
+            var carritoView = new CarritoComprasView(this.carritoService);
             carritoView.MdiParent = this;
             carritoView.Show();
         }
