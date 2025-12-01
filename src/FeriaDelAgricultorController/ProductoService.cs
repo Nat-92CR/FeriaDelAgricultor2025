@@ -43,12 +43,15 @@ namespace FeriaDelAgricultorController
                 .ToList();
         }
 
+        // ======================================================
+        // (equivalente a ObtenerPorProductor)
+        // ======================================================
+
         /// <summary>
         /// Obtiene todos los productos que pertenecen a un productor específico.
+        /// Este método es usado por la vista.
         /// </summary>
-        /// <param name="nombreProductor">Nombre del productor.</param>
-        /// <returns>Lista de productos del productor.</returns>
-        public List<Producto> ObtenerProductosPorProductor(string nombreProductor)
+        public List<Producto> ObtenerPorProductor(string nombreProductor)
         {
             if (string.IsNullOrWhiteSpace(nombreProductor))
             {
@@ -60,6 +63,32 @@ namespace FeriaDelAgricultorController
                 .ToList();
         }
 
+        // ======================================================
+        // Obtener un solo producto específico
+        // ======================================================
+
+        /// <summary>
+        /// Obtiene un producto por PRODUCTOR y NOMBRE de producto.
+        /// Este método lo usa la vista cuando el usuario da clic en "Agregar al carrito".
+        /// </summary>
+        public Producto ObtenerProducto(string nombreProductor, string nombreProducto)
+        {
+            if (string.IsNullOrWhiteSpace(nombreProductor) ||
+                string.IsNullOrWhiteSpace(nombreProducto))
+            {
+                return null;
+            }
+
+            return this.productos
+                .FirstOrDefault(p =>
+                    p.Productor.Equals(nombreProductor, StringComparison.OrdinalIgnoreCase) &&
+                    p.NombreProducto.Equals(nombreProducto, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // ======================================================
+        // lista de ejemplo
+        // ======================================================
+
         /// <summary>
         /// Crea una lista de productos de ejemplo.
         /// Más adelante se podría reemplazar para cargar desde archivo o base de datos.
@@ -67,8 +96,6 @@ namespace FeriaDelAgricultorController
         /// <returns>Lista de productos de ejemplo.</returns>
         private static List<Producto> CrearProductosEjemplo()
         {
-            // Aquí inventamos productores y productos.
-            // Puedes adaptarlos a los nombres reales de tu Usuario.csv si quieres.
             return new List<Producto>
             {
                 new() { NombreProducto = "Tomate",      Precio = 800,  Cantidad = 1, UnidadMedida = UnidadMedida.Kilogramos, Productor = "Edwin Solís" },

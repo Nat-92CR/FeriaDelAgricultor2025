@@ -2,22 +2,18 @@
 using FeriaDelAgricultorModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FeriaDelAgricultorController
 {
     /// <summary>
-    /// Handler class to manage user data (load, authentication, etc.).
+    /// Handler class to manage user data (load, authentication, register, save).
     /// </summary>
     public class UserHandler
     {
-        // 👇 AQUÍ SÍ usamos el genérico con Usuario / Implementacion -No abstraccion 
         private readonly IDataHandler<Usuario> dataHandler;
         private List<Usuario> users;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserHandler"/> class.
-        /// </summary>
-        /// <param name="dataHandler">The data handler instance (e.g. FileHandler).</param>
         public UserHandler(IDataHandler<Usuario> dataHandler)
         {
             this.dataHandler = dataHandler;
@@ -25,50 +21,62 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Loads users from the file.
+        /// Load user list from CSV using FileHandler.
         /// </summary>
-        /// <param name="filePath">The path of the file.</param>
-        /// <returns>True if users are loaded successfully; otherwise, false.</returns>
         public bool LoadUsers(string filePath)
         {
             try
             {
-                // Llama al método del dataHandler específico de Usuario
                 this.users = this.dataHandler.LoadData(filePath);
                 return true;
             }
-            catch (Exception)
+            catch
             {
                 return false;
             }
         }
 
         /// <summary>
-        /// Finds a user matching the given username and password.
+        /// Validate login.
         /// </summary>
-        /// <param name="username">The username.</param>
-        /// <param name="password">The password.</param>
-        /// <returns>The matching user or null if not found.</returns>
         public Usuario GetUserByCredentials(string username, string password)
         {
-            foreach (var user in this.users)
-            {
-                if (user.Username.Equals(username, StringComparison.OrdinalIgnoreCase) &&
-                    user.Password == password)
-                {
-                    return user;
-                }
-            }
-
-            return null;
+            return this.users.FirstOrDefault(u =>
+                u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)
+                && u.Password == password);
         }
 
         /// <summary>
-        /// Gets all users loaded in memory.
+        /// Get all users.
         /// </summary>
         public List<Usuario> GetAllUsers()
         {
             return this.users;
+        }
+
+        /// <summary>
+        /// Insert a new user.
+        /// </summary>
+        public bool InsertUser(Usuario nuevo)
+        {
+            if (this.users.Any(u => u.Username.Equals(nuevo.Username, StringComparison.OrdinalIgnoreCase)))
+                return false;
+
+            this.users.Add(nuevo);
+            return true;
+        }
+
+        /// <summary>
+        /// Save users to CSV file.
+        /// </summary>
+        public bool SaveUsers(string filePath)
+        {
+            return this.dataHandler.SaveData(this.users, filePath);
+        }
+
+        internal bool SaveUsers(object fileNameUsers)
+        {
+            throw new NotImplementedException();
         }
     }
 }

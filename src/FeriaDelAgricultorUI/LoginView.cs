@@ -25,7 +25,7 @@ namespace FeriaDelAgricultorUI
             {
                 MessageBox.Show(
                     $"Inicio de sesión exitoso." +
-                    $"\nBienvenido {user.Name}.{user.LastName}");
+                    $"\nBienvenido {user.Name} {user.LastName}");
 
                 //Aquí decidimos a qué vista va según el tipo
                 if (user.TipoUsuario == TipoUsuario.Cliente)
@@ -50,6 +50,13 @@ namespace FeriaDelAgricultorUI
             return false;
         }
 
+        private void BtnRegisterClick(object sender, EventArgs e)
+        {
+            var register = new RegisterUserView(this.loginController);
+            register.Show();
+        }
+
+
 
         private void BtnLoginClick(object sender, EventArgs e)
         {
@@ -65,6 +72,18 @@ namespace FeriaDelAgricultorUI
 
             // 3. Intentar login
             Login(userName, password);
+        }
+
+        /// <summary>
+        /// Maneja el clic del botón "Register User".
+        /// Abre la ventana para registrar un nuevo usuario.
+        /// </summary>
+        private void BtnRegisterUserClick(object sender, EventArgs e)
+        {
+            using (var registerView = new RegisterUserView(this.loginController))
+            {
+                registerView.ShowDialog(this);
+            }
         }
 
 

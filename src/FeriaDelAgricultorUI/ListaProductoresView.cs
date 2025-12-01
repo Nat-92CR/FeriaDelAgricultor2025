@@ -12,18 +12,22 @@ namespace FeriaDelAgricultorUI
     public partial class ListaProductoresView : Form
     {
         private readonly ProductoService productoService;
+        private readonly CarritoService carritoService;
 
         /// <summary>
         /// Inicializa una nueva instancia de <see cref="ListaProductoresView"/>.
         /// </summary>
         /// <param name="productoService">Servicio de productos.</param>
-        public ListaProductoresView(ProductoService productoService)
+        /// <param name="carritoService">Servicio de carrito compartido.</param>
+        public ListaProductoresView(ProductoService productoService, CarritoService carritoService)
         {
             this.productoService = productoService ?? throw new ArgumentNullException(nameof(productoService));
+            this.carritoService = carritoService ?? throw new ArgumentNullException(nameof(carritoService));
 
             InitializeComponent();
             ConfigurarColumnas();
-            CargarListaCompleta();
+            CargarProductoresEnCombo();   // ← llena el combo
+            CargarListaCompleta();        // ← lista todos los productos
         }
 
         /// <summary>
@@ -62,15 +66,88 @@ namespace FeriaDelAgricultorUI
         }
 
         /// <summary>
-        /// Muestra la ventana con la lista de productores y sus productos.
+        /// Cargar productores en el ComboBox.
         /// </summary>
-        private void btnListaProductores_Click(object sender, EventArgs e)
+        private void CargarProductoresEnCombo()
         {
-            // Pasamos el servicio de productos al formulario
-            var listaView = new ListaProductoresView(this.productoService);
-            listaView.MdiParent = this;
-            listaView.Show();
+            cbxProductores.Items.Clear();
+
+            cbxProductores.Items.Add("Todos los productores");
+
+            var productores = productoService.ObtenerProductores();
+
+            foreach (var p in productores)
+            {
+                cbxProductores.Items.Add(p);
+            }
+
+            cbxProductores.SelectedIndex = 0;
         }
 
+        /// <summary>
+        /// Evento: cuando se selecciona un productor en el combo.
+        /// </summary>
+        private void cbxProductores_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string seleccionado = cbxProductores.SelectedItem.ToString();
+
+            if (seleccionado == "Todos los productores")
+            {
+                CargarListaCompleta();
+                return;
+            }
+
+            CargarPorProductor(seleccionado);
+        }
+
+        /// <summary>
+        /// Cargar productos filtrados por productor.
+        /// </summary>
+        private void CargarPorProductor(string productor)
+        {
+            lvwProductores.Items.Clear();
+
+            List<Producto> productos = this.productoService.ObtenerPorProductor(productor);
+
+            foreach (var producto in productos)
+            {
+                var item = new ListViewItem(producto.Productor);
+                item.SubItems.Add(producto.NombreProducto);
+                item.SubItems.Add(producto.Precio.ToString("₡0.00"));
+                item.SubItems.Add(producto.Cantidad.ToString());
+                item.SubItems.Add(producto.UnidadMedida.ToString());
+                lvwProductores.Items.Add(item);
+            }
+        }
+
+        /// <summary>
+        /// Agregar producto al carrito (usa el carrito compartido).
+        /// </summary>
+        private void btnAgregarCarrito_Click(object sender, EventArgs e)
+        {
+            if (lvwProductores.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Seleccione un producto primero.");
+                return;
+            }
+
+            var item = lvwProductores.SelectedItems[0];
+
+            string productor = item.SubItems[0].Text;
+            string nombreProducto = item.SubItems[1].Text;
+
+            var producto = productoService.ObtenerProducto(productor, nombreProducto);
+
+            if (producto == null)
+            {
+                MessageBox.Show("Error cargando producto.");
+                return;
+            }
+
+            // 🔹 Aquí SÍ usamos el carrito compartido
+            carritoService.AgregarProducto(producto);
+
+            MessageBox.Show("Producto agregado al carrito.");
+        }
     }
 }
