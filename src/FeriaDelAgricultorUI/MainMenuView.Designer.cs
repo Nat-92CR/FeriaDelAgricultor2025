@@ -31,78 +31,78 @@ namespace FeriaDelAgricultorUI
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblBienvenida = new System.Windows.Forms.Label();
-            this.btnFactura = new System.Windows.Forms.Button();
-            this.btnListaProductores = new System.Windows.Forms.Button();
-            this.btnCarrito = new System.Windows.Forms.Button();
-            this.btnReportes = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+            lblBienvenida = new Label();
+            btnFactura = new Button();
+            btnListaProductores = new Button();
+            btnCarrito = new Button();
+            btnReportes = new Button();
+            SuspendLayout();
             // 
             // lblBienvenida
             // 
-            this.lblBienvenida.AutoSize = true;
-            this.lblBienvenida.Location = new System.Drawing.Point(35, 20);
-            this.lblBienvenida.Name = "lblBienvenida";
-            this.lblBienvenida.Size = new System.Drawing.Size(66, 15);
-            this.lblBienvenida.TabIndex = 0;
-            this.lblBienvenida.Text = "Bienvenido";
+            lblBienvenida.AutoSize = true;
+            lblBienvenida.Location = new Point(35, 20);
+            lblBienvenida.Name = "lblBienvenida";
+            lblBienvenida.Size = new Size(66, 15);
+            lblBienvenida.TabIndex = 0;
+            lblBienvenida.Text = "Bienvenido";
             // 
             // btnFactura
             // 
-            this.btnFactura.Location = new System.Drawing.Point(35, 60);
-            this.btnFactura.Name = "btnFactura";
-            this.btnFactura.Size = new System.Drawing.Size(129, 33);
-            this.btnFactura.TabIndex = 1;
-            this.btnFactura.Text = "Ver factura ejemplo";
-            this.btnFactura.UseVisualStyleBackColor = true;
-            this.btnFactura.Click += new System.EventHandler(this.btnFactura_Click);
+            btnFactura.Location = new Point(35, 213);
+            btnFactura.Name = "btnFactura";
+            btnFactura.Size = new Size(180, 33);
+            btnFactura.TabIndex = 5;
+            btnFactura.Text = "Ver última factura";
+            btnFactura.Click += btnFactura_Click;
             // 
             // btnListaProductores
             // 
-            this.btnListaProductores.Location = new System.Drawing.Point(35, 115);
-            this.btnListaProductores.Name = "btnListaProductores";
-            this.btnListaProductores.Size = new System.Drawing.Size(180, 33);
-            this.btnListaProductores.TabIndex = 2;
-            this.btnListaProductores.Text = "Lista de productores";
-            this.btnListaProductores.UseVisualStyleBackColor = true;
-            this.btnListaProductores.Click += new System.EventHandler(this.btnListaProductores_Click);
+            btnListaProductores.Location = new Point(35, 64);
+            btnListaProductores.Name = "btnListaProductores";
+            btnListaProductores.Size = new Size(180, 33);
+            btnListaProductores.TabIndex = 2;
+            btnListaProductores.Text = "Lista de productores";
+            btnListaProductores.UseVisualStyleBackColor = true;
+            btnListaProductores.Click += btnListaProductores_Click;
             // 
             // btnCarrito
             // 
-            this.btnCarrito.Location = new System.Drawing.Point(35, 160);
-            this.btnCarrito.Name = "btnCarrito";
-            this.btnCarrito.Size = new System.Drawing.Size(180, 33);
-            this.btnCarrito.TabIndex = 3;
-            this.btnCarrito.Text = "Carrito de compras";
-            this.btnCarrito.UseVisualStyleBackColor = true;
-            this.btnCarrito.Click += new System.EventHandler(this.btnCarrito_Click);
+            btnCarrito.Location = new Point(35, 113);
+            btnCarrito.Name = "btnCarrito";
+            btnCarrito.Size = new Size(180, 33);
+            btnCarrito.TabIndex = 3;
+            btnCarrito.Text = "Carrito de compras";
+            btnCarrito.UseVisualStyleBackColor = true;
+            btnCarrito.Click += btnCarrito_Click;
             // 
             // btnReportes
             // 
-            this.btnReportes.Location = new System.Drawing.Point(35, 205);
-            this.btnReportes.Name = "btnReportes";
-            this.btnReportes.Size = new System.Drawing.Size(180, 33);
-            this.btnReportes.TabIndex = 4;
-            this.btnReportes.Text = "Reportes / estadísticas";
-            this.btnReportes.UseVisualStyleBackColor = true;
-            this.btnReportes.Click += new System.EventHandler(this.btnReportes_Click);
+            btnReportes.Location = new Point(35, 165);
+            btnReportes.Name = "btnReportes";
+            btnReportes.Size = new Size(180, 33);
+            btnReportes.TabIndex = 4;
+            btnReportes.Text = "Reportes / estadísticas";
+            btnReportes.UseVisualStyleBackColor = true;
+            btnReportes.Click += btnReportes_Click;
             // 
             // MainMenuView
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.btnReportes);
-            this.Controls.Add(this.btnCarrito);
-            this.Controls.Add(this.btnListaProductores);
-            this.Controls.Add(this.btnFactura);
-            this.Controls.Add(this.lblBienvenida);
-            this.IsMdiContainer = true;
-            this.Name = "MainMenuView";
-            this.Text = "Menú principal - Feria del Agricultor";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            AutoSize = true;
+            ClientSize = new Size(800, 450);
+            Controls.Add(btnReportes);
+            Controls.Add(btnCarrito);
+            Controls.Add(btnListaProductores);
+            Controls.Add(btnFactura);
+            Controls.Add(lblBienvenida);
+            IsMdiContainer = true;
+            Name = "MainMenuView";
+            Text = "Menú principal - Feria del Agricultor";
+            Load += btnFactura_Click;
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion
