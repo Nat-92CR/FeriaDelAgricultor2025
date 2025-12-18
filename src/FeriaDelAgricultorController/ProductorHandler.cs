@@ -1,8 +1,8 @@
-﻿using FeriaDelAgricultorModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using FeriaDelAgricultorModels;
 
 namespace FeriaDelAgricultorController
 {
@@ -11,14 +11,22 @@ namespace FeriaDelAgricultorController
     /// </summary>
     public class ProductorHandler
     {
+        /// <summary>
+        /// Nombre del archivo CSV que contiene los productores.
+        /// </summary>
         private const string NombreArchivo = "Productores.csv";
 
         /// <summary>
-        /// Carga los productores desde el archivo CSV ubicado en la carpeta Data.
+        /// Carga los productores desde el archivo CSV ubicado en la carpeta
+        /// bin\Debug\net9.0-windows (misma ruta que el ejecutable).
         /// </summary>
+        /// <returns>Lista de productores cargados desde el archivo.</returns>
         public List<Productor> CargarProductores()
         {
-            string ruta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", NombreArchivo);
+            var productores = new List<Productor>();
+
+            // Ruta completa al CSV (sin subcarpeta "Data" en tu proyecto actual).
+            string ruta = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, NombreArchivo);
 
             if (!File.Exists(ruta))
             {
@@ -27,25 +35,38 @@ namespace FeriaDelAgricultorController
 
             var lineas = File.ReadAllLines(ruta)
                              .Skip(1) // saltar encabezado
-                             .Where(x => !string.IsNullOrWhiteSpace(x))
-                             .ToList();
-
-            var productores = new List<Productor>();
+                             .Where(l => !string.IsNullOrWhiteSpace(l));
 
             foreach (var linea in lineas)
             {
                 var partes = linea.Split(';');
 
-                if (partes.Length < 4)
-                    continue;
-
-                productores.Add(new Productor
+                // Esperamos 5 columnas: Id;Nombre;Ubicacion;Telefono;PuntoFeriaId
+                if (partes.Length < 5)
                 {
-                    Id = int.Parse(partes[0]),
-                    Nombre = partes[1],
-                    Ubicacion = partes[2],
-                    Telefono = partes[3]
-                });
+                    continue;
+                }
+
+                if (!int.TryParse(partes[0], out int id))
+                {
+                    continue;
+                }
+
+                string nombre = partes[1].Trim();
+                string ubicacion = partes[2].Trim();
+                string telefono = partes[3].Trim();
+
+                int puntoFeriaId = 0;
+                int.TryParse(partes[4], out puntoFeriaId);
+
+                var productor = new Productor(
+                    id,
+                    nombre,
+                    ubicacion,
+                    telefono,
+                    puntoFeriaId);
+
+                productores.Add(productor);
             }
 
             return productores;

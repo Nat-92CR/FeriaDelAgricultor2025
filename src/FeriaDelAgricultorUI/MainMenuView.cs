@@ -20,6 +20,8 @@ namespace FeriaDelAgricultorUI
         // Carrito compartido entre vistas
         private readonly CarritoService carritoService;
 
+        private readonly PuntoFeriaService puntoFeriaService;
+
         /// <summary>
         /// Este constructor recibe el usuario luego del login.
         /// </summary>
@@ -33,8 +35,59 @@ namespace FeriaDelAgricultorUI
             this.facturaService = new FacturaService();
             this.productoService = new ProductoService();
             this.carritoService = new CarritoService();   // carrito único
+            this.puntoFeriaService = new PuntoFeriaService();
 
             ConfigurarMensajeBienvenida();
+
+            // ✅ Al iniciar sesión NO debe poder ver factura automáticamente
+            btnFactura.Enabled = false;
+
+            // ✅ Si el Designer o alguien enganchó Load a btnFactura_Click, lo quitamos
+            this.Load -= btnFactura_Click;
+
+            // ✅ Cargamos un Load real que NO abre factura: solo habilita/deshabilita el botón
+            this.Load += MainMenuView_Load;
+        }
+
+        /// <summary>
+        /// Evento Load del menú principal.
+        /// Aquí NO se abre nada automáticamente.
+        /// Solo se actualiza el estado del botón "Ver última factura".
+        /// </summary>
+        private void MainMenuView_Load(object sender, EventArgs e)
+        {
+            ActualizarEstadoBotonFactura();
+        }
+
+        /// <summary>
+        /// Habilita o deshabilita el botón de "Ver última factura" dependiendo
+        /// de si existe al menos una factura para el usuario actual.
+        /// </summary>
+        private void ActualizarEstadoBotonFactura()
+        {
+            if (usuario == null)
+            {
+                btnFactura.Enabled = false;
+                return;
+            }
+
+            const string nombreArchivo = "Facturas.csv";
+
+            if (!File.Exists(nombreArchivo))
+            {
+                btnFactura.Enabled = false;
+                return;
+            }
+
+            string usuarioTextoActual = $"{usuario.Name} {usuario.LastName}".Trim();
+
+            bool existeFacturaUsuario = File.ReadAllLines(nombreArchivo)
+                .Skip(1)
+                .Where(l => !string.IsNullOrWhiteSpace(l))
+                .Select(l => l.Split(';'))
+                .Any(p => p.Length >= 2 && p[1] == usuarioTextoActual);
+
+            btnFactura.Enabled = existeFacturaUsuario;
         }
 
         /// <summary>
@@ -85,6 +138,7 @@ namespace FeriaDelAgricultorUI
                     "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
+                btnFactura.Enabled = false;
                 return;
             }
 
@@ -97,6 +151,7 @@ namespace FeriaDelAgricultorUI
                     "Información",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
+                btnFactura.Enabled = false;
                 return;
             }
 
@@ -112,11 +167,34 @@ namespace FeriaDelAgricultorUI
                     "Información",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
+                btnFactura.Enabled = false;
                 return;
             }
 
-            // Tomar la última línea registrada
-            var ultimaPartes = lineas.Last().Split(';');
+            // ✅ Tomar la última factura DEL USUARIO ACTUAL (no del sistema)
+            string usuarioTextoActual = $"{usuario.Name} {usuario.LastName}".Trim();
+
+            var ultimaLineaUsuario = lineas
+                .Where(l =>
+                {
+                    var parts = l.Split(';');
+                    return parts.Length >= 2 && parts[1] == usuarioTextoActual;
+                })
+                .LastOrDefault();
+
+            if (ultimaLineaUsuario == null)
+            {
+                MessageBox.Show(
+                    "Aún no hay una factura registrada para este cliente.",
+                    "Información",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+
+                btnFactura.Enabled = false;
+                return;
+            }
+
+            var ultimaPartes = ultimaLineaUsuario.Split(';');
             if (ultimaPartes.Length < 10)
             {
                 MessageBox.Show(
@@ -168,18 +246,6 @@ namespace FeriaDelAgricultorUI
 
             foreach (var partes in lineasFactura)
             {
-                // partes:
-                // 0 Fecha
-                // 1 Usuario
-                // 2 Productor
-                // 3 Producto
-                // 4 Cantidad
-                // 5 PrecioUnitario
-                // 6 TotalLinea
-                // 7 SubtotalFactura
-                // 8 ImpuestoFactura
-                // 9 TotalFactura
-
                 string productor = partes[2];
                 string nombreProducto = partes[3];
 
@@ -205,10 +271,6 @@ namespace FeriaDelAgricultorUI
                 factura.Productos.Add(producto);
             }
 
-            // Calcular descuento aproximado a partir de los montos guardados
-            // sumaBrutaLineas = suma de precio * cantidad
-            // subtotalConDescuento = sumaBrutaLineas - descuento
-            // => descuento = sumaBrutaLineas - subtotalConDescuento
             var descuento = sumaBrutaLineas - subtotalConDescuento;
             if (descuento < 0)
             {
@@ -220,7 +282,7 @@ namespace FeriaDelAgricultorUI
             // Mostrar la factura reconstruida
             var facturaForm = new FacturaView(factura)
             {
-                MdiParent = this // porque MainMenuView es MDI container
+                MdiParent = this
             };
 
             facturaForm.Show();
@@ -231,13 +293,16 @@ namespace FeriaDelAgricultorUI
         /// </summary>
         private void btnListaProductores_Click(object sender, EventArgs e)
         {
-            // Pasamos servicio de productos y carrito COMPARTIDO
-            var listaView = new ListaProductoresView(this.productoService, this.carritoService)
+            var seleccionView = new SeleccionPuntoFeriaView(
+                this.usuario,
+                this.puntoFeriaService,
+                this.productoService,
+                this.carritoService)
             {
                 MdiParent = this
             };
 
-            listaView.Show();
+            seleccionView.Show();
         }
 
         /// <summary>
@@ -245,15 +310,12 @@ namespace FeriaDelAgricultorUI
         /// </summary>
         private void btnCarrito_Click(object sender, EventArgs e)
         {
-            // Crear vista del carrito
             var view = new CarritoComprasView(carritoService)
             {
-                // Enviamos el usuario actual al carrito
                 UsuarioActual = this.usuario,
                 MdiParent = this
             };
 
-            // Mostrar como ventana hija del menú
             view.Show();
         }
 

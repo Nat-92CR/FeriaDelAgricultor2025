@@ -1,0 +1,65 @@
+Name,LastName,Username,Password,TipoUsuario,City,Directions
+Natalia,Tobal,ntobal,1234,Cliente,San José,San José centro
+Mafla,Jimenez,mjimenez,abcd,Cliente,Heredia,San Francisco
+Daniela,Rojas,drojas,abcd,Cliente,Cartago,Centro
+Sofia,León,sleon,abcd,Cliente,Cartago,Occidental
+Valeria,Ramírez,vramirez,abcd,Cliente,Alajuela,Alajuela centro
+Rafael,Castro,rcastro,abcd,Cliente,Cartago,Tejar
+Lucía,Soto,lsoto,abcd,Cliente,Cartago,El Guarco
+Gabriela,López,glopez,abcd,Cliente,San Ramón,Barrio Los Ángeles
+Mónica,Vargas,mvargas,abcd,Cliente,San José,Desamparados
+Sandra,Camacho,scamacho,abcd,Cliente,Heredia,San Pablo
+Elena,Solis,esolis,abcd,Cliente,San José,Pavas
+Paola,Hernández,phernandez,abcd,Cliente,Cartago,Paraíso
+Andrea,Marín,amarin,abcd,Cliente,Heredia,San Joaquín
+Patricia,Blanco,pblanco,abcd,Cliente,San José,Escazú
+Javier,Mata,jmata,abcd,Cliente,Cartago,Oreamuno
+Carlos,Solano,csolano,abcd,Cliente,San José,Goicoechea
+Luis,Fernández,lfernandez,abcd,Cliente,Alajuela,Grecia
+Pablo,Murillo,pmurillo,abcd,Cliente,Heredia,Santo Domingo
+Camila,Araya,caraya,abcd,Cliente,San José,Moravia
+Grethel,Lepez,glepez,abcd,Cliente,Cartago,Tres Ríos
+Silvia,Mora,smora,abcd,Cliente,Heredia,Santa Bárbara
+Fernando,Jiménez,fjimenez,abcd,Cliente,San Ramón,San Ramón centro
+Rosa,Blanco,rblanco,abcd,Cliente,San José,Montes de Oca
+Mariana,Rivera,mrivera,abcd,Cliente,San Ramón,Sabanilla
+Pedro,Rojas,projas,abcd,Cliente,San Ramón,Barrio San Juan
+Carlos,Rojas,crojas,abcd,Productor,San Ramón,Finca Las Brisas
+Juan,Pérez,jperez,1234,Productor,Heredia,San Isidro
+Marcos,Jiménez,mjimenezp,abcd,Productor,Heredia,San Rafael
+Diego,González,dgonzalez,abcd,Productor,Cartago,Juan Viñas
+Luis,Segura,lsegura,abcd,Productor,Cartago,Jiménez
+Mario,Chávez,mchavez,abcd,Productor,Alajuela,San Miguel
+Dulce,Mora,dmora,abcd,Productor,San Ramón,Piedades
+María,Ulloa,mulloa,abcd,Productor,San Ramón,Magallanes
+Mario,Cubillo,mcubillo,abcd,Productor,Alajuela,San Carlos
+Marta,Loría,mloria,abcd,Productor,Heredia,Birrí
+Ricardo,Araya,raraya,abcd,Productor,San José,Coronado
+Ana,Sandoval,asandoval,abcd,Productor,San José,Aserrí
+Ronald,Solís,rsolis,abcd,Productor,San José,Acosta
+José,Solis,jsolis,abcd,Productor,San José,Desamparados
+Héctor,Esparza,hesparza,abcd,Productor,Heredia,Barva
+Gerardo,López,glopezp,abcd,Productor,San Ramón,San Isidro
+Beatriz,Murillo,bmurillo,abcd,Productor,San Ramón,El Empalme
+Fabiola,Muniz,fmuniz,abcd,Productor,Heredia,San Isidro
+Cristian,Rodríguez,crodriguez,abcd,Productor,Heredia,San José de la Montaña
+Leticia,Durán,lduran,abcd,Productor,San José,Dota
+Rocío,Bolaños,rbolanos,abcd,Productor,San José,Tarrazu
+Rafael,Salazar,rsalazar,abcd,Productor,Cartago,Turrialba
+Johan,Bonilla,jbonilla,abcd,Productor,Heredia,Sarapiquí
+Karla,Quirós,kquiros,abcd,Productor,Cartago,Tucurrique
+María,Jímenez,mjimenezc,abcd,Productor,San José,Pérez Zeledón
+Sergio,Fonseca,sfonseca,abcd,Productor,Cartago,Orosi
+Silvia,Rivera,srivera,abcd,Productor,San Ramón,Alfaro
+Gloria,Ramos,gramos,abcd,Productor,Heredia,San Joaquín
+Esteban,Vargas,evargas,abcd,Productor,Heredia,La Aurora
+Carlos,Gutiérrez,cgutierrez,abcd,Productor,San Ramón,Volio
+Patricio,Brenes,pbrenes,abcd,Productor,Cartago,Paraíso
+Laura,Naranjo,lnaranjo,abcd,Cliente,San José,Hatillo
+Andrés,Salas,asalas,abcd,Cliente,Alajuela,Poás
+Melisa,Gómez,mgomez,abcd,Cliente,Heredia,San Joaquín
+César,Céspedes,ccespedes,abcd,Cliente,Cartago,La Unión
+Tania,Méndez,tmendez,abcd,Cliente,San José,San Sebastián
+Óscar,Rodríguez,orodriguez,abcd,Cliente,Alajuela,Naranjo
+Karina,Solís,ksolis,abcd,Cliente,Cartago,Concepción
+Jorge,Ramírez,jramirez,abcd,Cliente,San José,Santa Ana

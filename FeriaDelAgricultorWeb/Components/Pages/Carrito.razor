@@ -1,0 +1,78 @@
+﻿@page "/carrito"
+@using FeriaDelAgricultorModels
+@using FeriaDelAgricultorController
+@inject CarritoService CarritoService
+
+<h3>Carrito de compras</h3>
+
+@if (Productos.Count == 0)
+{
+    <div class="alert alert-info">
+        El carrito está vacío.
+    </div>
+
+    <a class="btn btn-secondary" href="/feria">Volver a feria</a>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Puesto</th>
+                <th>Producto</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+                <th style="width:120px;">Acción</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Productos)
+            {
+                <tr>
+                    <td>@p.Productor</td>
+                    <td>@p.NombreProducto</td>
+                    <td>₡@p.Precio</td>
+                    <td>@p.Cantidad</td>
+                    <td>₡@(p.Precio* p.Cantidad)</td>
+                    <td>
+                        <button class="btn btn-danger btn-sm"
+                                @onclick="() => Eliminar(p.Productor, p.NombreProducto)">
+                            Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h5>Total: ₡@Total</h5>
+
+    <div style="margin-top:12px; display:flex; gap:10px; flex-wrap:wrap;">
+        <a class="btn btn-secondary" href="/feria">Seguir comprando</a>
+        <button class="btn btn-warning" @onclick="Vaciar">Vaciar carrito</button>
+    </div>
+}
+
+@code {
+    private List<Producto> Productos = new();
+
+    private decimal Total => Productos.Sum(x => x.Precio * x.Cantidad);
+
+    protected override void OnInitialized()
+    {
+        Productos = CarritoService.ObtenerProductos();
+    }
+
+    private void Eliminar(string productor, string producto)
+    {
+        CarritoService.EliminarProducto(productor, producto);
+        Productos = CarritoService.ObtenerProductos();
+    }
+
+    private void Vaciar()
+    {
+        CarritoService.VaciarCarrito();
+        Productos = CarritoService.ObtenerProductos();
+    }
+}

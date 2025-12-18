@@ -25,12 +25,13 @@ namespace FeriaDelAgricultorUI
             lvwProductores = new ListView();
             cbxProductores = new ComboBox();
             btnAgregarCarrito = new Button();
+            lblFeriaSeleccionada = new Label();
             SuspendLayout();
             // 
             // lblTitulo
             // 
             lblTitulo.AutoSize = true;
-            lblTitulo.Location = new Point(12, 9);
+            lblTitulo.Location = new Point(12, 48);
             lblTitulo.Name = "lblTitulo";
             lblTitulo.Size = new Size(200, 15);
             lblTitulo.TabIndex = 0;
@@ -39,9 +40,9 @@ namespace FeriaDelAgricultorUI
             // lvwProductores
             // 
             lvwProductores.FullRowSelect = true;
-            lvwProductores.Location = new Point(12, 65);
+            lvwProductores.Location = new Point(12, 95);
             lvwProductores.Name = "lvwProductores";
-            lvwProductores.Size = new Size(603, 247);
+            lvwProductores.Size = new Size(634, 352);
             lvwProductores.TabIndex = 1;
             lvwProductores.UseCompatibleStateImageBehavior = false;
             lvwProductores.View = View.Details;
@@ -49,27 +50,37 @@ namespace FeriaDelAgricultorUI
             // cbxProductores
             // 
             cbxProductores.FormattingEnabled = true;
-            cbxProductores.Location = new Point(12, 36);
+            cbxProductores.Location = new Point(12, 66);
             cbxProductores.Name = "cbxProductores";
-            cbxProductores.Size = new Size(260, 23);
+            cbxProductores.Size = new Size(323, 23);
             cbxProductores.TabIndex = 2;
             cbxProductores.SelectedIndexChanged += cbxProductores_SelectedIndexChanged;
             // 
             // btnAgregarCarrito
             // 
-            btnAgregarCarrito.Location = new Point(460, 339);
+            btnAgregarCarrito.Location = new Point(12, 465);
             btnAgregarCarrito.Name = "btnAgregarCarrito";
-            btnAgregarCarrito.Size = new Size(155, 54);
+            btnAgregarCarrito.Size = new Size(634, 36);
             btnAgregarCarrito.TabIndex = 3;
             btnAgregarCarrito.Text = "Agregar al Carrito";
             btnAgregarCarrito.UseVisualStyleBackColor = true;
             btnAgregarCarrito.Click += btnAgregarCarrito_Click;
             // 
+            // lblFeriaSeleccionada
+            // 
+            lblFeriaSeleccionada.AutoSize = true;
+            lblFeriaSeleccionada.Location = new Point(12, 18);
+            lblFeriaSeleccionada.Name = "lblFeriaSeleccionada";
+            lblFeriaSeleccionada.Size = new Size(106, 15);
+            lblFeriaSeleccionada.TabIndex = 4;
+            lblFeriaSeleccionada.Text = "Feria seleccionada:";
+            // 
             // ListaProductoresView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(629, 405);
+            ClientSize = new Size(658, 656);
+            Controls.Add(lblFeriaSeleccionada);
             Controls.Add(btnAgregarCarrito);
             Controls.Add(cbxProductores);
             Controls.Add(lvwProductores);
@@ -86,5 +97,6 @@ namespace FeriaDelAgricultorUI
         private ListView lvwProductores;
         private ComboBox cbxProductores;
         private Button btnAgregarCarrito;
+        private Label lblFeriaSeleccionada;
     }
 }
