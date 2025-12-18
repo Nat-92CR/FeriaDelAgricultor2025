@@ -1,0 +1,63 @@
+Productor;NombreProducto;Precio;Cantidad;UnidadMedida
+Agrícola San Pedro;Tomate;850;80;Kg
+Agrícola San Pedro;Papa;700;120;Kg
+Agrícola San Pedro;Cebolla;900;60;Kg
+Agrícola San Pedro;Lechuga;600;40;Unidades
+Agrícola San Pedro;Zanahoria;750;90;Kg
+Agrícola San Pedro;Chile Dulce;1200;50;Kg
+Agrícola San Pedro;Pepino;650;55;Kg
+Agrícola San Pedro;Culantro;300;70;Unidades
+
+Finca Los Volcanes;Fresa;1800;35;Kg
+Finca Los Volcanes;Mora;2200;30;Kg
+Finca Los Volcanes;Piña;1500;40;Unidades
+Finca Los Volcanes;Sandía;2500;25;Unidades
+Finca Los Volcanes;Melón;2000;28;Unidades
+Finca Los Volcanes;Papaya;1400;32;Unidades
+Finca Los Volcanes;Banano;900;80;Kg
+Finca Los Volcanes;Mango;1200;45;Kg
+
+Productores La Montaña;Café Molido 500g;2800;40;Unidades
+Productores La Montaña;Miel 250ml;2400;35;Unidades
+Productores La Montaña;Huevos (Docena);1800;25;Unidades
+Productores La Montaña;Queso Fresco 500g;3200;18;Unidades
+Productores La Montaña;Yogurt Natural 1L;2600;22;Litros
+Productores La Montaña;Pan Casero;1200;30;Unidades
+Productores La Montaña;Jalea de Guayaba;2100;20;Unidades
+Productores La Montaña;Mantequilla Artesanal;2900;15;Unidades
+
+Huerta Santa María;Espinaca;900;35;Unidades
+Huerta Santa María;Acelga;850;30;Unidades
+Huerta Santa María;Brócoli;1300;25;Kg
+Huerta Santa María;Coliflor;1400;20;Kg
+Huerta Santa María;Repollo;1200;25;Unidades
+Huerta Santa María;Remolacha;800;40;Kg
+Huerta Santa María;Ayote;1100;18;Unidades
+Huerta Santa María;Apio;950;22;Unidades
+
+Orgánicos del Valle;Arroz Integral 1kg;1800;50;Kg
+Orgánicos del Valle;Frijol Rojo 1kg;2200;40;Kg
+Orgánicos del Valle;Harina de Maíz 1kg;1600;45;Kg
+Orgánicos del Valle;Avena 1kg;2100;35;Kg
+Orgánicos del Valle;Granola 500g;2300;30;Unidades
+Orgánicos del Valle;Leche de Almendra 1L;2500;20;Litros
+Orgánicos del Valle;Azúcar Morena 1kg;1900;40;Kg
+Orgánicos del Valle;Sal Rosada 500g;1700;25;Unidades
+
+El Buen Productor;Naranja;900;80;Kg
+El Buen Productor;Limón;650;90;Kg
+El Buen Productor;Mandarina;1100;60;Kg
+El Buen Productor;Aguacate;1800;35;Kg
+El Buen Productor;Yuca;800;70;Kg
+El Buen Productor;Plátano;900;65;Kg
+El Buen Productor;Camote;950;55;Kg
+El Buen Productor;Jengibre;1400;25;Kg
+
+Finca Los Abuelos;Maíz Dulce;1200;40;Unidades
+Finca Los Abuelos;Chayote;700;90;Unidades
+Finca Los Abuelos;Pepino;650;70;Kg
+Finca Los Abuelos;Tomate Cherry;1600;35;Kg
+Finca Los Abuelos;Cebollín;500;50;Unidades
+Finca Los Abuelos;Pimiento;1700;30;Kg
+Finca Los Abuelos;Berenjena;1500;25;Kg
+Finca Los Abuelos;Calabacín;1300;28;Kg
