@@ -1,21 +1,31 @@
 ﻿using FeriaDelAgricultorController;
+using FeriaDelAgricultorController.Abstractions;
+using FeriaDelAgricultorModels;
 using FeriaDelAgricultorWeb.Components;
-using Microsoft.AspNetCore.Components;
+using FeriaDelAgricultorWeb.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Blazor (Server / Interactive)
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// ✅ Registrar tus servicios (Controller)
-// Usamos Singleton para que la app mantenga carrito/servicios vivos durante la sesión.
-// (Si tu profe exige otro, luego lo cambiamos, pero esto funciona bien.)
-builder.Services.AddSingleton<ProductoService>();
-builder.Services.AddSingleton<ProductorService>();
-builder.Services.AddSingleton<PuntoFeriaService>();
-builder.Services.AddSingleton<CarritoService>();
-builder.Services.AddSingleton<FacturaService>();
+// Sesión
+builder.Services.AddScoped<SessionUsuarioService>();
+
+// Controller/Handlers
+builder.Services.AddScoped<UserHandler>();
+builder.Services.AddScoped<LoginController>();
+
+// IMPORTANTÍSIMO: interfaz y clase deben coincidir
+builder.Services.AddScoped<IDataHandler<Usuario>, FileHandler>();
+
+// Servicios existentes
+builder.Services.AddScoped<PuntoFeriaService>();
+builder.Services.AddScoped<ProductorService>();
+builder.Services.AddScoped<ProductoService>();
+builder.Services.AddScoped<CarritoService>();
+builder.Services.AddScoped<FacturaService>();
+builder.Services.AddScoped<EstadisticasService>();
 
 var app = builder.Build();
 
@@ -30,6 +40,6 @@ app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.MapRazorComponents<App>()
-   .AddInteractiveServerRenderMode();
+    .AddInteractiveServerRenderMode();
 
 app.Run();

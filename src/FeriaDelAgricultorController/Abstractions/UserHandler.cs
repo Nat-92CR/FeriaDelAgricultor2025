@@ -7,47 +7,46 @@ using System.Linq;
 namespace FeriaDelAgricultorController
 {
     /// <summary>
-    /// Handler class to manage user data (load, authentication, register, save).
+    /// Clase encargada de administrar los usuarios del sistema.
+    /// Se encarga de:
+    /// - Cargar usuarios desde el archivo CSV
+    /// - Validar credenciales de inicio de sesión
+    /// - Registrar nuevos usuarios
+    /// - Guardar los usuarios nuevamente en el archivo CSV
     /// </summary>
     public class UserHandler
     {
-        private readonly IDataHandler<Usuario> dataHandler;
         private List<Usuario> users;
+        private readonly IDataHandler<Usuario> dataHandler;
 
+        /// <summary>
+        /// Constructor que inicializa el handler y carga los usuarios.
+        /// </summary>
         public UserHandler(IDataHandler<Usuario> dataHandler)
         {
             this.dataHandler = dataHandler;
             this.users = new List<Usuario>();
+            LoadUsers(Generales.FileNameUsers);
         }
 
         /// <summary>
-        /// Load user list from CSV using FileHandler.
+        /// Carga los usuarios desde el archivo CSV.
         /// </summary>
-        public bool LoadUsers(string filePath)
+        /// <param name="filePath">Ruta del archivo CSV.</param>
+        public void LoadUsers(string filePath)
         {
             try
             {
                 this.users = this.dataHandler.LoadData(filePath);
-                return true;
             }
             catch
             {
-                return false;
+                this.users = new List<Usuario>();
             }
         }
 
         /// <summary>
-        /// Validate login.
-        /// </summary>
-        public Usuario GetUserByCredentials(string username, string password)
-        {
-            return this.users.FirstOrDefault(u =>
-                u.Username.Equals(username, StringComparison.OrdinalIgnoreCase)
-                && u.Password == password);
-        }
-
-        /// <summary>
-        /// Get all users.
+        /// Devuelve todos los usuarios cargados.
         /// </summary>
         public List<Usuario> GetAllUsers()
         {
@@ -55,28 +54,107 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Insert a new user.
+        /// Busca un usuario por credenciales (username + password).
+        /// </summary>
+        public Usuario? GetUserByCredentials(string username, string password)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
+                return null;
+
+            return this.users.FirstOrDefault(u =>
+                u.Username.Equals(username.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                u.Password.Equals(password.Trim(), StringComparison.Ordinal));
+        }
+
+        /// <summary>
+        /// Inserta un nuevo usuario si no existe ya el username.
         /// </summary>
         public bool InsertUser(Usuario nuevo)
         {
-            if (this.users.Any(u => u.Username.Equals(nuevo.Username, StringComparison.OrdinalIgnoreCase)))
+            if (nuevo == null) return false;
+
+            if (string.IsNullOrWhiteSpace(nuevo.Username) || string.IsNullOrWhiteSpace(nuevo.Password))
                 return false;
+
+            var existe = this.users.Any(u =>
+                u.Username.Equals(nuevo.Username.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (existe) return false;
 
             this.users.Add(nuevo);
             return true;
         }
 
         /// <summary>
-        /// Save users to CSV file.
+        /// Guarda los usuarios al archivo CSV.
         /// </summary>
         public bool SaveUsers(string filePath)
         {
-            return this.dataHandler.SaveData(this.users, filePath);
+            try
+            {
+                return this.dataHandler.SaveData(this.users, filePath);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
-        internal bool SaveUsers(object fileNameUsers)
+        // ==========================
+        // ✅ MÉTODOS PARA ADMIN
+        // ==========================
+
+        public bool UpdateUser(Usuario actualizado)
         {
-            throw new NotImplementedException();
+            if (actualizado == null) return false;
+
+            var idx = this.users.FindIndex(u =>
+                u.Username.Equals(actualizado.Username, StringComparison.OrdinalIgnoreCase));
+
+            if (idx < 0) return false;
+
+            this.users[idx] = actualizado;
+            return SaveUsers(Generales.FileNameUsers);
+        }
+
+        public bool DeleteUser(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return false;
+
+            var u = this.users.FirstOrDefault(x =>
+                x.Username.Equals(username.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (u == null) return false;
+
+            this.users.Remove(u);
+            return SaveUsers(Generales.FileNameUsers);
+        }
+
+        public bool SetRole(string username, TipoUsuario nuevoRol)
+        {
+            if (string.IsNullOrWhiteSpace(username)) return false;
+
+            var u = this.users.FirstOrDefault(x =>
+                x.Username.Equals(username.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (u == null) return false;
+
+            u.TipoUsuario = nuevoRol;
+            return SaveUsers(Generales.FileNameUsers);
+        }
+
+        public bool ResetPassword(string username, string nuevaPassword)
+        {
+            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(nuevaPassword))
+                return false;
+
+            var u = this.users.FirstOrDefault(x =>
+                x.Username.Equals(username.Trim(), StringComparison.OrdinalIgnoreCase));
+
+            if (u == null) return false;
+
+            u.Password = nuevaPassword.Trim();
+            return SaveUsers(Generales.FileNameUsers);
         }
     }
 }

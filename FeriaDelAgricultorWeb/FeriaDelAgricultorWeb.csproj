@@ -1,43 +1,33 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <Compile Remove="Data\NewFolder\**" />
-    <Content Remove="Data\NewFolder\**" />
-    <EmbeddedResource Remove="Data\NewFolder\**" />
-    <None Remove="Data\NewFolder\**" />
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Data\NewFolder\**" />
+		<Content Remove="Data\NewFolder\**" />
+		<EmbeddedResource Remove="Data\NewFolder\**" />
+		<None Remove="Data\NewFolder\**" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\src\FeriaDelAgricultorController\FeriaDelAgricultorController.csproj" />
-    <ProjectReference Include="..\src\FeriaDelAgricultorModels\FeriaDelAgricultorModels.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\src\FeriaDelAgricultorController\FeriaDelAgricultorController.csproj" />
+		<ProjectReference Include="..\src\FeriaDelAgricultorModels\FeriaDelAgricultorModels.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Data\" />
-  </ItemGroup>
+	<!-- Mantiene la carpeta Data visible en el proyecto -->
+	<ItemGroup>
+		<Folder Include="Data\" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Data\Facturas.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\Productores.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\Productos.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\PuntosFeria.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Data\Usuario.csv">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<!-- Copiar TODOS los CSV de Data al output (bin) conservando la carpeta Data -->
+	<ItemGroup>
+		<Content Include="Data\*.csv">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
 
 </Project>

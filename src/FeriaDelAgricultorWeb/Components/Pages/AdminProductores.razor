@@ -1,0 +1,240 @@
+﻿@page "/admin-productores"
+@using FeriaDelAgricultorModels
+@inject FeriaDelAgricultorController.ProductorService ProductorService
+@inject FeriaDelAgricultorController.ProductoService ProductoService
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Admin - Productores</h3>
+
+@if (!Session.EsAdmin)
+{
+    <div class="alert alert-danger">No autorizado.</div>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(MsgOk))
+    {
+        <div class="alert alert-success">@MsgOk</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(MsgErr))
+    {
+        <div class="alert alert-danger">@MsgErr</div>
+    }
+
+    @* Confirmación simple *@
+    @if (ConfirmandoEliminacion && ProductorAEliminar != null)
+    {
+        <div class="alert alert-warning">
+            <b>Confirmación:</b> Vas a eliminar el productor <b>@ProductorAEliminar.NombrePuesto</b>.
+            <br />
+            Esto también eliminará <b>@CantidadProductosAEliminar</b> producto(s) asociados en el inventario.
+            <br /><br />
+            <div class="d-flex gap-2">
+                <button class="btn btn-danger btn-sm" @onclick="ConfirmarEliminar">
+                    Sí, eliminar productor y sus productos
+                </button>
+                <button class="btn btn-secondary btn-sm" @onclick="CancelarEliminar">
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    }
+
+    <div class="card p-3 mb-3">
+        <h5>@(Editando ? "Editar productor" : "Crear productor")</h5>
+
+        <div class="row g-2">
+            <div class="col-md-2">
+                <input class="form-control" placeholder="Id (opcional)" @bind="Form.Id" />
+            </div>
+            <div class="col-md-3">
+                <input class="form-control" placeholder="NombrePuesto" @bind="Form.NombrePuesto" />
+            </div>
+            <div class="col-md-3">
+                <input class="form-control" placeholder="Ubicacion" @bind="Form.Ubicacion" />
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" placeholder="Telefono" @bind="Form.Telefono" />
+            </div>
+            <div class="col-md-1">
+                <input class="form-control" placeholder="PuntoId" @bind="Form.PuntoFeriaId" />
+            </div>
+            <div class="col-md-1">
+                <input class="form-control" placeholder="Dueño" @bind="Form.Dueno" />
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100" @onclick="Guardar">
+                    @(Editando ? "Guardar cambios" : "Crear")
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-light w-100" @onclick="Limpiar">Limpiar</button>
+            </div>
+        </div>
+
+        <small class="text-muted">
+            Nota: Si un productor se elimina, su inventario se elimina también (productos asociados).
+        </small>
+    </div>
+
+    <div class="card p-3">
+        <h5>Listado</h5>
+
+        <table class="table table-sm table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Tel</th>
+                    <th>Punto</th>
+                    <th>Dueño</th>
+                    <th style="width:220px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Lista)
+                {
+                    <tr>
+                        <td>@p.Id</td>
+                        <td>@p.NombrePuesto</td>
+                        <td>@p.Ubicacion</td>
+                        <td>@p.Telefono</td>
+                        <td>@p.PuntoFeriaId</td>
+                        <td>@p.Dueno</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary btn-sm" @onclick="(() => Editar(p))">Editar</button>
+                                <button class="btn btn-outline-danger btn-sm" @onclick="(() => PedirConfirmacionEliminar(p))">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Productor> Lista = new();
+    private string? MsgOk;
+    private string? MsgErr;
+
+    private bool Editando = false;
+    private Productor Form = new Productor(0, "", "", "", 0, "");
+
+    // Confirmación eliminación
+    private bool ConfirmandoEliminacion = false;
+    private Productor? ProductorAEliminar;
+    private int CantidadProductosAEliminar = 0;
+
+    protected override void OnInitialized()
+    {
+        if (!Session.EstaLogueado) { Nav.NavigateTo("/login"); return; }
+        if (!Session.EsAdmin) { Nav.NavigateTo("/"); return; }
+        Cargar();
+    }
+
+    private void Cargar()
+    {
+        MsgOk = MsgErr = null;
+        Lista = ProductorService.ObtenerTodos().OrderBy(x => x.Id).ToList();
+
+        // limpiar confirmación si estaba abierta
+        ConfirmandoEliminacion = false;
+        ProductorAEliminar = null;
+        CantidadProductosAEliminar = 0;
+    }
+
+    private void Limpiar()
+    {
+        Editando = false;
+        Form = new Productor(0, "", "", "", 0, "");
+        MsgOk = MsgErr = null;
+    }
+
+    private void Editar(Productor p)
+    {
+        Editando = true;
+        Form = new Productor(p.Id, p.NombrePuesto, p.Ubicacion, p.Telefono, p.PuntoFeriaId, p.Dueno);
+
+        // cerrar confirmación si estaba abierta
+        ConfirmandoEliminacion = false;
+        ProductorAEliminar = null;
+        CantidadProductosAEliminar = 0;
+    }
+
+    private void Guardar()
+    {
+        MsgOk = MsgErr = null;
+
+        if (string.IsNullOrWhiteSpace(Form.NombrePuesto))
+        {
+            MsgErr = "NombrePuesto es obligatorio.";
+            return;
+        }
+
+        bool ok = Editando
+            ? ProductorService.Actualizar(Form)
+            : ProductorService.Crear(Form);
+
+        if (!ok)
+        {
+            MsgErr = "No se pudo guardar. (Revisa ID duplicado o CSV).";
+            return;
+        }
+
+        MsgOk = Editando ? "Productor actualizado." : "Productor creado.";
+        Limpiar();
+        Cargar();
+    }
+
+    private void PedirConfirmacionEliminar(Productor p)
+    {
+        MsgOk = MsgErr = null;
+
+        ProductorAEliminar = p;
+        ConfirmandoEliminacion = true;
+
+        // contar productos asociados (según Productos.csv: Productor = NombrePuesto)
+        CantidadProductosAEliminar = ProductoService
+            .ObtenerTodos()
+            .Count(x => string.Equals(x.Productor, p.NombrePuesto, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void CancelarEliminar()
+    {
+        ConfirmandoEliminacion = false;
+        ProductorAEliminar = null;
+        CantidadProductosAEliminar = 0;
+    }
+
+    private void ConfirmarEliminar()
+    {
+        MsgOk = MsgErr = null;
+
+        if (ProductorAEliminar == null)
+        {
+            MsgErr = "No hay productor seleccionado para eliminar.";
+            CancelarEliminar();
+            return;
+        }
+
+        // 1) eliminar productos del productor (cascada)
+        ProductoService.EliminarPorProductor(ProductorAEliminar.NombrePuesto);
+
+        // 2) eliminar productor
+        var ok = ProductorService.Eliminar(ProductorAEliminar.Id);
+        if (!ok)
+        {
+            MsgErr = "No se pudo eliminar el productor.";
+            return;
+        }
+
+        MsgOk = $"Productor eliminado. Se eliminaron {CantidadProductosAEliminar} producto(s) asociados.";
+        CancelarEliminar();
+        Cargar();
+    }
+}

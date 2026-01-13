@@ -1,0 +1,58 @@
+﻿@page "/admin"
+@using FeriaDelAgricultorModels
+@inject FeriaDelAgricultorController.ProductorService ProductorService
+@inject FeriaDelAgricultorController.ProductoService ProductoService
+@inject FeriaDelAgricultorController.UserHandler UserHandler
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Panel Admin</h3>
+
+@if (!Session.EsAdmin)
+{
+    <div class="alert alert-danger">No autorizado.</div>
+}
+else
+{
+    <div class="row g-3">
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div><b>Usuarios</b></div>
+                <div style="font-size:28px;">@UserHandler.GetAllUsers().Count</div>
+                <NavLink href="admin-usuarios">Gestionar</NavLink>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div><b>Productores</b></div>
+                <div style="font-size:28px;">@ProductorService.ObtenerTodos().Count</div>
+                <NavLink href="admin-productores">Gestionar</NavLink>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div><b>Productos</b></div>
+                <div style="font-size:28px;">@ProductoService.ObtenerTodos().Count</div>
+                <NavLink href="admin-productos">Gestionar</NavLink>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card p-3">
+                <div><b>Reportes</b></div>
+                <div style="font-size:28px;">—</div>
+                <NavLink href="estadisticas">Ir a Estadísticas</NavLink>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        if (!Session.EstaLogueado) { Nav.NavigateTo("/login"); return; }
+        if (!Session.EsAdmin) { Nav.NavigateTo("/"); return; }
+    }
+}

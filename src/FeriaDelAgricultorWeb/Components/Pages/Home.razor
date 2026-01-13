@@ -1,0 +1,54 @@
+﻿@page "/"
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Menú principal</h3>
+
+@if (!Session.EstaLogueado)
+{
+    <div class="alert alert-warning">
+        Debes iniciar sesión para continuar.
+    </div>
+
+    <button class="btn btn-primary" @onclick="GoLogin">
+        Ir a Login
+    </button>
+}
+else
+{
+    <div class="alert alert-success">
+        Bienvenido(a), <b>@Session.UsuarioActual!.Name</b>
+        @if (Session.EsAdmin)
+        {
+            <span> (Administrador)</span>
+        }
+        else if (Session.EsCliente)
+        {
+            <span> (Cliente)</span>
+        }
+    </div>
+
+    <p>Selecciona una opción en el menú lateral para continuar.</p>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        @if (Session.EsCliente)
+        {
+            <a class="btn btn-primary" href="/feria">Ir a Feria</a>
+            <a class="btn btn-secondary" href="/carrito">Ver Carrito</a>
+        }
+
+        <a class="btn btn-info" href="/estadisticas">Ver Reportes</a>
+
+        <button class="btn btn-danger" @onclick="CerrarSesion">Cerrar sesión</button>
+    </div>
+}
+
+@code {
+    private void GoLogin() => Nav.NavigateTo("/login");
+
+    private void CerrarSesion()
+    {
+        Session.CerrarSesion();
+        Nav.NavigateTo("/login");
+    }
+}

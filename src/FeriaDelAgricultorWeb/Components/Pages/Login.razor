@@ -1,0 +1,68 @@
+﻿@page "/login"
+@using FeriaDelAgricultorModels
+@inject FeriaDelAgricultorController.LoginController LoginController
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Iniciar sesión</h3>
+
+<div style="max-width:420px;">
+    <div class="mb-3">
+        <label>Usuario</label>
+        <input class="form-control" @bind="username" />
+    </div>
+
+    <div class="mb-3">
+        <label>Contraseña</label>
+        <input type="password" class="form-control" @bind="password" />
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="OnLogin">Ingresar</button>
+
+    @if (!string.IsNullOrWhiteSpace(error))
+    {
+        <div class="alert alert-danger mt-3">@error</div>
+    }
+</div>
+
+@code {
+    private string username = "";
+    private string password = "";
+    private string? error;
+
+    protected override void OnInitialized()
+    {
+        // ✅ Si ya hay sesión, no tiene sentido mostrar login
+        if (Session.EstaLogueado)
+        {
+            Nav.NavigateTo("/");
+        }
+    }
+
+    private void OnLogin()
+    {
+        error = null;
+
+        var u = (username ?? "").Trim();
+        var p = (password ?? "").Trim();
+
+        if (string.IsNullOrWhiteSpace(u) || string.IsNullOrWhiteSpace(p))
+        {
+            error = "Debes ingresar usuario y contraseña.";
+            return;
+        }
+
+        var user = LoginController.Login(u, p);
+
+        if (user is null)
+        {
+            error = "Usuario o contraseña inválidos.";
+            return;
+        }
+
+        Session.IniciarSesion(user);
+
+        // ✅ sin force reload
+        Nav.NavigateTo("/");
+    }
+}

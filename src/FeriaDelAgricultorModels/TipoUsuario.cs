@@ -6,6 +6,7 @@
     public enum TipoUsuario
     {
         Cliente = 1,
-        Productor = 2
+        Productor = 2,
+        Admin = 3
     }
 }

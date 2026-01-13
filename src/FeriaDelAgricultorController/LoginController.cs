@@ -37,7 +37,7 @@ namespace FeriaDelAgricultorController
         /// Un objeto <see cref="Usuario"/> si las credenciales son válidas;
         /// de lo contrario, <c>null</c>.
         /// </returns>
-        public Usuario Login(string userName, string password)
+        public Usuario? Login(string userName, string password)
         {
             return this.userHandler.GetUserByCredentials(userName, password);
         }

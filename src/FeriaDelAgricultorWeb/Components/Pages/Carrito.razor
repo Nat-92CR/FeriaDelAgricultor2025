@@ -1,0 +1,293 @@
+﻿@page "/carrito"
+@using FeriaDelAgricultorModels
+@using FeriaDelAgricultorController
+@using System.Linq
+@inject CarritoService CarritoService
+@inject ProductoService ProductoService
+@inject FacturaService FacturaService
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Carrito de compras</h3>
+
+@if (!Session.EstaLogueado)
+{
+    <div class="alert alert-warning">
+        Debes iniciar sesión para ver el carrito.
+    </div>
+    <button class="btn btn-primary" @onclick="IrLogin">Ir a login</button>
+}
+else if (!Session.EsCliente)
+{
+    <div class="alert alert-danger">
+        Acceso denegado: solo los clientes pueden usar el carrito.
+    </div>
+    <button class="btn btn-secondary" @onclick="IrInicio">Ir al inicio</button>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(MensajeError))
+    {
+        <div class="alert alert-danger">@MensajeError</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(MensajeOk))
+    {
+        <div class="alert alert-success">@MensajeOk</div>
+    }
+
+    @if (FacturaEmitida != null)
+    {
+        <div class="card" style="padding:16px;">
+            <h4>Factura emitida</h4>
+            <p><b>Fecha:</b> @FacturaEmitida.Fecha.ToString("yyyy-MM-dd")</p>
+            <p><b>Cliente:</b> @FacturaEmitida.Cliente?.Username</p>
+
+            <p>
+                <b>Dirección:</b>
+                @FacturaEmitida.Direccion?.Province,
+                @FacturaEmitida.Direccion?.Canton,
+                @FacturaEmitida.Direccion?.District.
+                @FacturaEmitida.Direccion?.OtherDetails
+            </p>
+
+            <p><b>Método de pago:</b> @FacturaEmitida.MetodoPago</p>
+
+            <table class="table table-bordered" style="margin-top:10px;">
+                <thead>
+                    <tr>
+                        <th>Puesto</th>
+                        <th>Producto</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>Total parcial</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in FacturaEmitida.Productos)
+                    {
+                        <tr>
+                            <td>@p.Productor</td>
+                            <td>@p.NombreProducto</td>
+                            <td>₡@p.Precio</td>
+                            <td>@p.Cantidad</td>
+                            <td>₡@(p.Precio* p.Cantidad)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div style="display:flex; gap:24px; flex-wrap:wrap;">
+                <div><b>Subtotal:</b> ₡@FacturaEmitida.ObtenerSubtotalConDescuento()</div>
+                <div><b>Impuesto:</b> ₡@FacturaEmitida.ObtenerImpuesto()</div>
+                <div><b>Total:</b> ₡@FacturaEmitida.ObtenerTotal()</div>
+            </div>
+
+            <div style="margin-top:12px;">
+                <button class="btn btn-success" @onclick="VolverAFeria">Volver a la feria</button>
+            </div>
+        </div>
+    }
+    else if (Productos.Count == 0)
+    {
+        <div class="alert alert-info">
+            El carrito está vacío.
+        </div>
+        <button class="btn btn-secondary" @onclick="VolverAFeria">Volver a feria</button>
+    }
+    else
+    {
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Puesto</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total parcial</th>
+                    <th style="width:120px;">Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Productos)
+                {
+                    <tr>
+                        <td>@p.Productor</td>
+                        <td>@p.NombreProducto</td>
+                        <td>₡@p.Precio</td>
+                        <td>@p.Cantidad</td>
+                        <td>₡@(p.Precio* p.Cantidad)</td>
+                        <td>
+                            <button class="btn btn-danger btn-sm"
+                                    @onclick="() => Eliminar(p.Productor, p.NombreProducto)">
+                                Eliminar
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <h5>Total: ₡@Total</h5>
+
+        <hr />
+        <h5>Dirección de entrega</h5>
+
+        <div class="row" style="gap:12px;">
+            <div class="col-12">
+                <label><b>Provincia</b></label>
+                <input class="form-control" @bind="DirProvincia" />
+            </div>
+
+            <div class="col-12">
+                <label><b>Cantón</b></label>
+                <input class="form-control" @bind="DirCanton" />
+            </div>
+
+            <div class="col-12">
+                <label><b>Distrito</b></label>
+                <input class="form-control" @bind="DirDistrito" />
+            </div>
+
+            <div class="col-12">
+                <label><b>Señas / Detalles</b></label>
+                <input class="form-control" @bind="DirDetalles" />
+            </div>
+        </div>
+
+        <div style="margin-top:12px;">
+            <label><b>Método de pago</b></label>
+            <select class="form-select" style="max-width:260px;" @bind="MetodoPagoSeleccionado">
+                @foreach (var m in Enum.GetValues<MetodoPago>())
+                {
+                    <option value="@m">@m</option>
+                }
+            </select>
+        </div>
+
+        <div style="margin-top:14px; display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn btn-secondary" @onclick="VolverAFeria">Seguir comprando</button>
+            <button class="btn btn-warning" @onclick="Vaciar">Vaciar carrito</button>
+            <button class="btn btn-success" @onclick="EmitirFactura">Emitir factura</button>
+        </div>
+    }
+}
+
+@code {
+    private List<Producto> Productos = new();
+    private decimal Total => Productos.Sum(x => x.Precio * x.Cantidad);
+
+    private string? MensajeError;
+    private string? MensajeOk;
+
+    private string DirProvincia = string.Empty;
+    private string DirCanton = string.Empty;
+    private string DirDistrito = string.Empty;
+    private string DirDetalles = string.Empty;
+
+    private MetodoPago MetodoPagoSeleccionado = MetodoPago.Efectivo;
+
+    private Factura? FacturaEmitida;
+
+    protected override void OnInitialized()
+    {
+        if (Session.EstaLogueado && Session.EsCliente)
+        {
+            Recargar();
+        }
+    }
+
+    private void Recargar()
+    {
+        Productos = CarritoService.ObtenerProductos();
+        StateHasChanged();
+    }
+
+    private void IrLogin() => Nav.NavigateTo("/login");
+    private void IrInicio() => Nav.NavigateTo("/");
+
+    private void VolverAFeria() => Nav.NavigateTo("/feria");
+
+    private void Eliminar(string productor, string nombreProducto)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        var actual = Productos.FirstOrDefault(x =>
+            x.Productor.Equals(productor, StringComparison.OrdinalIgnoreCase) &&
+            x.NombreProducto.Equals(nombreProducto, StringComparison.OrdinalIgnoreCase));
+
+        if (actual != null)
+        {
+            ProductoService.ReponerStock(productor, nombreProducto, actual.Cantidad);
+        }
+
+        CarritoService.EliminarProducto(productor, nombreProducto);
+        Recargar();
+    }
+
+    private void Vaciar()
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        foreach (var item in Productos)
+        {
+            ProductoService.ReponerStock(item.Productor, item.NombreProducto, item.Cantidad);
+        }
+
+        CarritoService.VaciarCarrito();
+        Recargar();
+    }
+
+    private void EmitirFactura()
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        if (Productos.Count == 0)
+        {
+            MensajeError = "No hay productos en el carrito.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(DirProvincia) ||
+            string.IsNullOrWhiteSpace(DirCanton) ||
+            string.IsNullOrWhiteSpace(DirDistrito) ||
+            string.IsNullOrWhiteSpace(DirDetalles))
+        {
+            MensajeError = "Completa la dirección de entrega (provincia, cantón, distrito y señas).";
+            return;
+        }
+
+        try
+        {
+            var direccion = new Direccion
+            {
+                Province = DirProvincia.Trim(),
+                Canton = DirCanton.Trim(),
+                District = DirDistrito.Trim(),
+                OtherDetails = DirDetalles.Trim(),
+                IsPrincipal = true
+            };
+
+            var factura = FacturaService.GenerarFactura(
+                Session.UsuarioActual!,
+                direccion,
+                MetodoPagoSeleccionado,
+                Productos
+            );
+
+            FacturaService.GuardarFacturaEnCsv(factura);
+
+            CarritoService.VaciarCarrito();
+            Recargar();
+
+            FacturaEmitida = factura;
+            MensajeOk = "Factura emitida y guardada en Facturas.csv.";
+        }
+        catch (Exception ex)
+        {
+            MensajeError = $"Ocurrió un error al emitir la factura: {ex.Message}";
+        }
+    }
+}
