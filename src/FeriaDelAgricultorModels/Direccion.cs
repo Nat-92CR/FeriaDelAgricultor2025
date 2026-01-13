@@ -1,40 +1,33 @@
 ﻿namespace FeriaDelAgricultorModels
 {
     /// <summary>
-    /// Class in charge of representing a user direction.
+    /// Representa la dirección de entrega del usuario.
     /// </summary>
     public class Direccion
     {
         /// <summary>
-        /// Gets or sets the province.
+        /// Provincia.
         /// </summary>
-        /// <value>
-        /// The province.
-        /// </value>
         public string Province { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the district.
+        /// Cantón.
         /// </summary>
-        /// <value>
-        /// The district.
-        /// </value>
+        public string Canton { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Distrito.
+        /// </summary>
         public string District { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the other details.
+        /// Señales / otras referencias.
         /// </summary>
-        /// <value>
-        /// The other details.
-        /// </value>
         public string OtherDetails { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets a value indicating whether this direction is User's principal direction.
+        /// Indica si es la dirección principal.
         /// </summary>
-        /// <value>
-        ///   <c>true</c> if this instance is principal; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsPrincipal { get; set;} = false;
+        public bool IsPrincipal { get; set; } = false;
     }
 }

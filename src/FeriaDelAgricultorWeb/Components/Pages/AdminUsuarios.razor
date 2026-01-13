@@ -1,0 +1,262 @@
+﻿@page "/admin-usuarios"
+@using FeriaDelAgricultorModels
+@inject FeriaDelAgricultorController.UserHandler UserHandler
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Admin - Usuarios</h3>
+
+@if (!Session.EstaLogueado)
+{
+    <div class="alert alert-warning">Debes iniciar sesión.</div>
+}
+else if (!Session.EsAdmin)
+{
+    <div class="alert alert-danger">No autorizado.</div>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(MsgOk))
+    {
+        <div class="alert alert-success">@MsgOk</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(MsgErr))
+    {
+        <div class="alert alert-danger">@MsgErr</div>
+    }
+
+    <div class="card p-3 mb-3">
+        <h5>Crear usuario</h5>
+
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input class="form-control" placeholder="Nombre" @bind="Nombre" />
+            </div>
+            <div class="col-md-3">
+                <input class="form-control" placeholder="Apellido" @bind="Apellido" />
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" placeholder="Username" @bind="Username" />
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" placeholder="Password" @bind="Password" />
+            </div>
+            <div class="col-md-2">
+                <select class="form-select" @bind="Rol">
+                    <option value="@TipoUsuario.Cliente">Cliente</option>
+                    <option value="@TipoUsuario.Admin">Admin</option>
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100" @onclick="CrearUsuario">Crear</button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-light w-100" @onclick="LimpiarFormulario">Limpiar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card p-3">
+        <h5>Listado</h5>
+
+        <table class="table table-sm table-striped align-middle">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Username</th>
+                    <th>Rol</th>
+                    <th style="width:260px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in Usuarios)
+                {
+                    <tr>
+                        <td>@($"{u.Name} {u.LastName}")</td>
+                        <td>@u.Username</td>
+                        <td>
+                            <select class="form-select form-select-sm"
+                                    @onchange="(e) => CambiarRol(u.Username, e.Value?.ToString())">
+                                <option value="Cliente" selected="@(u.TipoUsuario == TipoUsuario.Cliente)">Cliente</option>
+                                <option value="Admin" selected="@(u.TipoUsuario == TipoUsuario.Admin)">Admin</option>
+                            </select>
+                        </td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary btn-sm"
+                                        @onclick="() => ResetPass(u.Username)">
+                                    Reset pass
+                                </button>
+
+                                <button class="btn btn-outline-danger btn-sm"
+                                        @onclick="() => Eliminar(u.Username)">
+                                    Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Usuario> Usuarios = new();
+
+    private string Nombre = "";
+    private string Apellido = "";
+    private string Username = "";
+    private string Password = "";
+    private TipoUsuario Rol = TipoUsuario.Cliente;
+
+    private string? MsgOk;
+    private string? MsgErr;
+
+    protected override void OnInitialized()
+    {
+        if (!Session.EstaLogueado)
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        if (!Session.EsAdmin)
+        {
+            Nav.NavigateTo("/");
+            return;
+        }
+
+        Cargar();
+    }
+
+    private void Cargar()
+    {
+        MsgOk = null;
+        MsgErr = null;
+
+        Usuarios = UserHandler.GetAllUsers()
+                              .OrderBy(u => u.TipoUsuario)
+                              .ThenBy(u => u.Username)
+                              .ToList();
+    }
+
+    private void CrearUsuario()
+    {
+        MsgOk = null;
+        MsgErr = null;
+
+        if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
+        {
+            MsgErr = "Username y Password son obligatorios.";
+            return;
+        }
+
+        // ✅ Tu constructor espera el rol como string:
+        // new Usuario(nombre, apellido, username, password, tipoUsuarioString)
+        var nuevo = new Usuario(
+            Nombre?.Trim() ?? "",
+            Apellido?.Trim() ?? "",
+            Username.Trim(),
+            Password.Trim(),
+            Rol.ToString()
+        );
+
+        if (!UserHandler.InsertUser(nuevo))
+        {
+            MsgErr = "No se pudo crear (username duplicado).";
+            return;
+        }
+
+        UserHandler.SaveUsers(Generales.FileNameUsers);
+
+        MsgOk = "Usuario creado.";
+        LimpiarFormulario();
+        Cargar();
+    }
+
+    private void LimpiarFormulario()
+    {
+        Nombre = "";
+        Apellido = "";
+        Username = "";
+        Password = "";
+        Rol = TipoUsuario.Cliente;
+    }
+
+    private void CambiarRol(string username, string? valor)
+    {
+        MsgOk = null;
+        MsgErr = null;
+
+        if (string.IsNullOrWhiteSpace(valor)) return;
+
+        if (!Enum.TryParse<TipoUsuario>(valor, out var rol))
+        {
+            MsgErr = "Rol inválido.";
+            return;
+        }
+
+        if (username.Equals(Session.UsuarioActual?.Username, StringComparison.OrdinalIgnoreCase)
+            && rol != TipoUsuario.Admin)
+        {
+            MsgErr = "No puedes quitarte el rol Admin.";
+            return;
+        }
+
+        var ok = UserHandler.SetRole(username, rol);
+        if (!ok)
+        {
+            MsgErr = "No se pudo actualizar el rol.";
+            return;
+        }
+
+        UserHandler.SaveUsers(Generales.FileNameUsers);
+
+        MsgOk = "Rol actualizado.";
+        Cargar();
+    }
+
+    private void ResetPass(string username)
+    {
+        MsgOk = null;
+        MsgErr = null;
+
+        var ok = UserHandler.ResetPassword(username, "1234");
+        if (!ok)
+        {
+            MsgErr = "No se pudo resetear la contraseña.";
+            return;
+        }
+
+        UserHandler.SaveUsers(Generales.FileNameUsers);
+
+        MsgOk = "Contraseña reseteada a 1234.";
+        Cargar();
+    }
+
+    private void Eliminar(string username)
+    {
+        MsgOk = null;
+        MsgErr = null;
+
+        if (username.Equals(Session.UsuarioActual?.Username, StringComparison.OrdinalIgnoreCase))
+        {
+            MsgErr = "No puedes eliminar el usuario con el que estás logueada.";
+            return;
+        }
+
+        var ok = UserHandler.DeleteUser(username);
+        if (!ok)
+        {
+            MsgErr = "No se pudo eliminar.";
+            return;
+        }
+
+        UserHandler.SaveUsers(Generales.FileNameUsers);
+
+        MsgOk = "Usuario eliminado.";
+        Cargar();
+    }
+}

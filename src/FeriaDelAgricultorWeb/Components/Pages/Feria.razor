@@ -1,0 +1,348 @@
+﻿@page "/feria"
+@using FeriaDelAgricultorModels
+@using FeriaDelAgricultorController
+@inject PuntoFeriaService PuntoFeriaService
+@inject ProductorService ProductorService
+@inject ProductoService ProductoService
+@inject CarritoService CarritoService
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Feria del Agricultor - Selección y compra</h3>
+
+@if (!Session.EstaLogueado)
+{
+    <div class="alert alert-warning">
+        Debes iniciar sesión para acceder a la feria.
+    </div>
+    <button class="btn btn-primary" @onclick="IrLogin">Ir a login</button>
+}
+else if (!Session.EsCliente)
+{
+    <div class="alert alert-danger">
+        Acceso denegado: solo los clientes pueden comprar en la feria.
+    </div>
+    <button class="btn btn-secondary" @onclick="IrInicio">Ir al inicio</button>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(MensajeOk))
+    {
+        <div class="alert alert-success">@MensajeOk</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(MensajeError))
+    {
+        <div class="alert alert-danger">@MensajeError</div>
+    }
+
+    <div class="row" style="gap:16px; display:flex; flex-wrap:wrap; margin-bottom:16px;">
+        <div style="min-width:260px;">
+            <label><b>Provincia</b></label><br />
+            <select class="form-select" @onchange="OnProvinciaChanged">
+                <option value="">-- Seleccione --</option>
+                @foreach (var p in Provincias)
+                {
+                    <option value="@p">@p</option>
+                }
+            </select>
+        </div>
+
+        <div style="min-width:260px;">
+            <label><b>Cantón</b></label><br />
+            <select class="form-select" @onchange="OnCantonChanged" disabled="@(!ProvinciaSeleccionadaOk)">
+                <option value="">-- Seleccione --</option>
+                @foreach (var c in Cantones)
+                {
+                    <option value="@c">@c</option>
+                }
+            </select>
+        </div>
+
+        <div style="min-width:320px;">
+            <label><b>Punto de feria</b></label><br />
+            <select class="form-select" @onchange="OnFeriaChanged" disabled="@(!CantonSeleccionadoOk)">
+                <option value="">-- Seleccione --</option>
+                @foreach (var f in Ferias)
+                {
+                    <option value="@f.Id">@f.Nombre</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    @if (FeriaSeleccionada != null)
+    {
+        <div style="margin-bottom:16px;">
+            <b>Feria seleccionada:</b> @FeriaSeleccionada.Nombre - @FeriaSeleccionada.Canton, @FeriaSeleccionada.Provincia <br />
+            <b>Dirección:</b> @FeriaSeleccionada.DireccionExacta
+        </div>
+
+        <div style="display:flex; gap:20px; flex-wrap:wrap;">
+            <div style="min-width:340px;">
+                <h5>Productores / Puestos</h5>
+
+                <label><b>Puesto</b></label><br />
+                <select class="form-select" @onchange="OnPuestoChanged">
+                    <option value="">-- Seleccione --</option>
+                    @foreach (var pr in ProductoresDeFeria)
+                    {
+                        <option value="@pr.NombrePuesto">@pr.NombrePuesto (@pr.Dueno)</option>
+                    }
+                </select>
+
+                @if (ProductorSeleccionado != null)
+                {
+                    <div style="margin-top:10px;">
+                        <b>Dueño:</b> @ProductorSeleccionado.Dueno <br />
+                        <b>Tel:</b> @ProductorSeleccionado.Telefono <br />
+                        <b>Ubicación:</b> @ProductorSeleccionado.Ubicacion
+                    </div>
+                }
+            </div>
+
+            <div style="flex:1; min-width:520px;">
+                <h5>Productos del puesto</h5>
+
+                @if (ProductorSeleccionado == null)
+                {
+                    <div class="alert alert-info">
+                        Selecciona un puesto para ver sus productos.
+                    </div>
+                }
+                else if (ProductosDelPuesto.Count == 0)
+                {
+                    <div class="alert alert-warning">
+                        No hay productos asociados a este puesto en Productos.csv.
+                        Verifica que la columna <b>Productor</b> sea exactamente el <b>NombrePuesto</b>.
+                    </div>
+                }
+                else
+                {
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Existencias</th>
+                                <th>Unidad</th>
+                                <th style="width:120px;">Cantidad</th>
+                                <th style="width:160px;">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var p in ProductosDelPuesto)
+                            {
+                                var key = Key(p.Productor, p.NombreProducto);
+
+                                <tr>
+                                    <td>@p.NombreProducto</td>
+                                    <td>₡@p.Precio</td>
+                                    <td>@p.Cantidad</td>
+                                    <td>@p.UnidadMedida</td>
+                                    <td>
+                                        <input type="number"
+                                               class="form-control form-control-sm"
+                                               style="width:100px;"
+                                               min="1"
+                                               max="@p.Cantidad"
+                                               value="@GetCantidad(key)"
+                                               @onchange="(e) => OnCantidadChanged(key, e)" />
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm"
+                                                disabled="@(p.Cantidad <= 0)"
+                                                @onclick="() => AgregarAlCarrito(p)">
+                                            Agregar al carrito
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+
+                <div style="margin-top:14px;">
+                    <a class="btn btn-success" href="/carrito">
+                        Ir al carrito (@CarritoService.ObtenerProductos().Count)
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+@code {
+    private string? MensajeOk;
+    private string? MensajeError;
+
+    private readonly Dictionary<string, int> Cantidades = new();
+
+    private List<string> Provincias = new();
+    private List<string> Cantones = new();
+    private List<PuntoFeria> Ferias = new();
+
+    private PuntoFeria? FeriaSeleccionada;
+
+    private List<Productor> ProductoresDeFeria = new();
+    private Productor? ProductorSeleccionado;
+
+    private List<Producto> ProductosDelPuesto = new();
+
+    private bool ProvinciaSeleccionadaOk => !string.IsNullOrWhiteSpace(ProvinciaSeleccionada);
+    private bool CantonSeleccionadoOk => !string.IsNullOrWhiteSpace(CantonSeleccionado);
+
+    private string? ProvinciaSeleccionada;
+    private string? CantonSeleccionado;
+
+    protected override void OnInitialized()
+    {
+        if (Session.EstaLogueado && Session.EsCliente)
+        {
+            Provincias = PuntoFeriaService.ObtenerProvincias();
+        }
+    }
+
+    private void IrLogin() => Nav.NavigateTo("/login");
+    private void IrInicio() => Nav.NavigateTo("/");
+
+    private static string Key(string productor, string producto) => $"{productor}|{producto}";
+
+    private int GetCantidad(string key)
+    {
+        if (!Cantidades.TryGetValue(key, out var v) || v <= 0)
+        {
+            Cantidades[key] = 1;
+            return 1;
+        }
+        return v;
+    }
+
+    private void OnCantidadChanged(string key, ChangeEventArgs e)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        if (int.TryParse(e.Value?.ToString(), out int n))
+        {
+            if (n <= 0) n = 1;
+            Cantidades[key] = n;
+        }
+        else
+        {
+            Cantidades[key] = 1;
+        }
+    }
+
+    private void OnProvinciaChanged(ChangeEventArgs e)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        ProvinciaSeleccionada = e.Value?.ToString();
+        CantonSeleccionado = null;
+
+        Cantones = string.IsNullOrWhiteSpace(ProvinciaSeleccionada)
+            ? new List<string>()
+            : PuntoFeriaService.ObtenerCantonesPorProvincia(ProvinciaSeleccionada);
+
+        Ferias = new List<PuntoFeria>();
+        FeriaSeleccionada = null;
+
+        ProductoresDeFeria = new List<Productor>();
+        ProductorSeleccionado = null;
+        ProductosDelPuesto = new List<Producto>();
+        Cantidades.Clear();
+    }
+
+    private void OnCantonChanged(ChangeEventArgs e)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        CantonSeleccionado = e.Value?.ToString();
+
+        Ferias = (!string.IsNullOrWhiteSpace(ProvinciaSeleccionada) && !string.IsNullOrWhiteSpace(CantonSeleccionado))
+            ? PuntoFeriaService.ObtenerPuntosPorProvinciaYCanton(ProvinciaSeleccionada, CantonSeleccionado)
+            : new List<PuntoFeria>();
+
+        FeriaSeleccionada = null;
+
+        ProductoresDeFeria = new List<Productor>();
+        ProductorSeleccionado = null;
+        ProductosDelPuesto = new List<Producto>();
+        Cantidades.Clear();
+    }
+
+    private void OnFeriaChanged(ChangeEventArgs e)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        if (int.TryParse(e.Value?.ToString(), out int id))
+            FeriaSeleccionada = Ferias.FirstOrDefault(x => x.Id == id);
+        else
+            FeriaSeleccionada = null;
+
+        ProductoresDeFeria = new List<Productor>();
+        ProductorSeleccionado = null;
+        ProductosDelPuesto = new List<Producto>();
+        Cantidades.Clear();
+
+        if (FeriaSeleccionada != null)
+            ProductoresDeFeria = ProductorService.ObtenerPorPuntoFeria(FeriaSeleccionada.Id);
+    }
+
+    private void OnPuestoChanged(ChangeEventArgs e)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        var puesto = e.Value?.ToString();
+
+        ProductorSeleccionado = string.IsNullOrWhiteSpace(puesto)
+            ? null
+            : ProductoresDeFeria.FirstOrDefault(p => p.NombrePuesto.Equals(puesto, StringComparison.OrdinalIgnoreCase));
+
+        ProductosDelPuesto = new List<Producto>();
+        Cantidades.Clear();
+
+        if (ProductorSeleccionado != null)
+            ProductosDelPuesto = ProductoService.ObtenerPorProductor(ProductorSeleccionado.NombrePuesto);
+    }
+
+    private void AgregarAlCarrito(Producto p)
+    {
+        MensajeOk = null;
+        MensajeError = null;
+
+        var key = Key(p.Productor, p.NombreProducto);
+        int cantidad = GetCantidad(key);
+
+        if (cantidad > p.Cantidad)
+        {
+            MensajeError = $"No puedes agregar {cantidad}. Solo hay {p.Cantidad} en inventario.";
+            return;
+        }
+
+        bool ok = ProductoService.TryDescontarStock(p.Productor, p.NombreProducto, cantidad);
+        if (!ok)
+        {
+            MensajeError = "No hay inventario suficiente (o el producto no existe).";
+            return;
+        }
+
+        CarritoService.AgregarProducto(new Producto
+        {
+            Productor = p.Productor,
+            NombreProducto = p.NombreProducto,
+            Precio = p.Precio,
+            Cantidad = cantidad,
+            UnidadMedida = p.UnidadMedida
+        }, cantidad);
+
+        MensajeOk = $"Se agregó '{p.NombreProducto}' (x{cantidad}) al carrito.";
+
+        if (ProductorSeleccionado != null)
+            ProductosDelPuesto = ProductoService.ObtenerPorProductor(ProductorSeleccionado.NombrePuesto);
+    }
+}

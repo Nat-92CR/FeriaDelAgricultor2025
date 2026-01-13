@@ -1,0 +1,518 @@
+﻿@page "/estadisticas"
+@using System.Globalization
+@using FeriaDelAgricultorController
+@inject EstadisticasService EstadisticasService
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Estadísticas / Reportes</h3>
+
+@if (!Session.EstaLogueado)
+{
+    <div class="alert alert-warning">Debes iniciar sesión para ver reportes.</div>
+}
+else
+{
+    <div class="card p-3 mb-3">
+        <div class="row g-3">
+            <div class="col-12 col-md-3">
+                <label class="form-label"><strong>Desde</strong></label>
+                <input class="form-control" type="date" @bind="Desde" />
+            </div>
+
+            <div class="col-12 col-md-3">
+                <label class="form-label"><strong>Hasta</strong></label>
+                <input class="form-control" type="date" @bind="Hasta" />
+            </div>
+
+            <div class="col-12 col-md-4">
+                <label class="form-label"><strong>Tipo de reporte</strong></label>
+
+                @if (Session.EsAdmin)
+                {
+                    <select class="form-select" @bind="TipoReporteAdmin">
+                        <option value="0">Admin - Resumen general</option>
+                        <option value="1">Admin - Productores TOP (por monto)</option>
+                        <option value="2">Admin - Productos TOP (por cantidad)</option>
+                        <option value="3">Admin - Ventas por mes</option>
+                        <option value="4">Admin - Usuarios TOP (clientes)</option>
+                        <option value="5">Admin - Inventario por productor</option>
+                    </select>
+                }
+                else
+                {
+                    <select class="form-select" @bind="TipoReporteUsuario">
+                        <option value="10">Mis reportes - Resumen</option>
+                        <option value="11">Mis reportes - Productores TOP</option>
+                        <option value="12">Mis reportes - Productos TOP</option>
+                        <option value="13">Mis reportes - Gasto por mes</option>
+                    </select>
+                }
+            </div>
+
+            <div class="col-12 col-md-2 d-flex align-items-end">
+                <button class="btn btn-primary w-100" @onclick="Aplicar">Aplicar</button>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(MensajeError))
+        {
+            <div class="alert alert-warning mt-3">@MensajeError</div>
+        }
+    </div>
+
+    @if (Session.EsAdmin)
+    {
+        @* ===================== ADMIN ===================== *@
+
+        @if (TipoReporteAdmin == 0)
+        {
+            <div class="card p-3">
+                <h5>Resumen general (Admin)</h5>
+
+                <table class="table table-bordered mt-2">
+                    <tbody>
+                        <tr>
+                            <th>Número de compras</th>
+                            <td>@ResumenAdmin.NumeroCompras</td>
+                        </tr>
+                        <tr>
+                            <th>Total ventas</th>
+                            <td>@FormatearColones(ResumenAdmin.TotalVentas)</td>
+                        </tr>
+                        <tr>
+                            <th>Total impuestos</th>
+                            <td>@FormatearColones(ResumenAdmin.TotalImpuestos)</td>
+                        </tr>
+                        <tr>
+                            <th>Ticket promedio</th>
+                            <td>@FormatearColones(ResumenAdmin.TicketPromedio)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (TipoReporteAdmin == 1)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Productor</th>
+                        <th>Cantidad total</th>
+                        <th>Número de compras</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteProductores.Count == 0)
+                    {
+                        <tr><td colspan="4">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteProductores)
+                        {
+                            <tr>
+                                <td>@r.Productor</td>
+                                <td>@r.CantidadProductos</td>
+                                <td>@r.NumeroCompras</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (TipoReporteAdmin == 2)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad total</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteProductos.Count == 0)
+                    {
+                        <tr><td colspan="3">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteProductos)
+                        {
+                            <tr>
+                                <td>@r.Producto</td>
+                                <td>@r.CantidadTotal</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (TipoReporteAdmin == 3)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Mes</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteGastoMes.Count == 0)
+                    {
+                        <tr><td colspan="2">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteGastoMes)
+                        {
+                            <tr>
+                                <td>@r.Mes</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (TipoReporteAdmin == 4)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Usuario</th>
+                        <th>Número de compras</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteUsuarios.Count == 0)
+                    {
+                        <tr><td colspan="3">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteUsuarios)
+                        {
+                            <tr>
+                                <td>@r.Usuario</td>
+                                <td>@r.NumeroCompras</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (TipoReporteAdmin == 5)
+        {
+            <div class="card p-3">
+                <h5>Inventario por productor</h5>
+
+                <h6 class="mt-3">Resumen</h6>
+                <table class="table table-bordered mt-2">
+                    <thead>
+                        <tr>
+                            <th>Productor</th>
+                            <th>Productos distintos</th>
+                            <th>Stock total</th>
+                            <th>Valor total inventario</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (InventarioResumen.Count == 0)
+                        {
+                            <tr><td colspan="4">Sin resultados.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var r in InventarioResumen)
+                            {
+                                <tr>
+                                    <td>@r.Productor</td>
+                                    <td>@r.CantidadProductos</td>
+                                    <td>@r.TotalItems</td>
+                                    <td>@FormatearColones(r.ValorTotal)</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <h6 class="mt-4">Detalle</h6>
+                <table class="table table-bordered mt-2">
+                    <thead>
+                        <tr>
+                            <th>Productor</th>
+                            <th>Producto</th>
+                            <th>Unidad</th>
+                            <th>Stock</th>
+                            <th>Precio</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (InventarioDetalle.Count == 0)
+                        {
+                            <tr><td colspan="6">Sin resultados.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (var d in InventarioDetalle)
+                            {
+                                <tr>
+                                    <td>@d.Productor</td>
+                                    <td>@d.Producto</td>
+                                    <td>@d.Unidad</td>
+                                    <td>@d.Stock</td>
+                                    <td>@FormatearColones(d.Precio)</td>
+                                    <td>@FormatearColones(d.ValorInventario)</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    }
+    else
+    {
+        @* ===================== USUARIO ===================== *@
+
+        @if (TipoReporteUsuario == 10)
+        {
+            <div class="card p-3">
+                <h5>Resumen (Mis reportes)</h5>
+
+                <table class="table table-bordered mt-2">
+                    <tbody>
+                        <tr>
+                            <th>Número de compras</th>
+                            <td>@ResumenUsuario.NumeroCompras</td>
+                        </tr>
+                        <tr>
+                            <th>Total gastado</th>
+                            <td>@FormatearColones(ResumenUsuario.TotalVentas)</td>
+                        </tr>
+                        <tr>
+                            <th>Total impuestos</th>
+                            <td>@FormatearColones(ResumenUsuario.TotalImpuestos)</td>
+                        </tr>
+                        <tr>
+                            <th>Ticket promedio</th>
+                            <td>@FormatearColones(ResumenUsuario.TicketPromedio)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        }
+        else if (TipoReporteUsuario == 11)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Productor</th>
+                        <th>Cantidad total</th>
+                        <th>Número de compras</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteProductores.Count == 0)
+                    {
+                        <tr><td colspan="4">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteProductores)
+                        {
+                            <tr>
+                                <td>@r.Productor</td>
+                                <td>@r.CantidadProductos</td>
+                                <td>@r.NumeroCompras</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (TipoReporteUsuario == 12)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad total</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteProductos.Count == 0)
+                    {
+                        <tr><td colspan="3">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteProductos)
+                        {
+                            <tr>
+                                <td>@r.Producto</td>
+                                <td>@r.CantidadTotal</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+        else if (TipoReporteUsuario == 13)
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Mes</th>
+                        <th>Monto total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (ReporteGastoMes.Count == 0)
+                    {
+                        <tr><td colspan="2">Sin resultados.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var r in ReporteGastoMes)
+                        {
+                            <tr>
+                                <td>@r.Mes</td>
+                                <td>@FormatearColones(r.MontoTotal)</td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        }
+    }
+}
+
+@code {
+    private DateTime Desde { get; set; }
+    private DateTime Hasta { get; set; }
+
+    private int TipoReporteAdmin { get; set; } = 0;
+    private int TipoReporteUsuario { get; set; } = 10;
+
+    private string? MensajeError;
+
+    private List<EstadisticasService.ProductorEstadistica> ReporteProductores = new();
+    private List<EstadisticasService.ProductoEstadistica> ReporteProductos = new();
+    private List<EstadisticasService.GastoMesEstadistica> ReporteGastoMes = new();
+    private List<EstadisticasService.UsuarioEstadistica> ReporteUsuarios = new();
+
+    private EstadisticasService.ResumenEstadistica ResumenAdmin = new();
+    private EstadisticasService.ResumenEstadistica ResumenUsuario = new();
+
+    private List<EstadisticasService.InventarioResumenProductor> InventarioResumen = new();
+    private List<EstadisticasService.InventarioItem> InventarioDetalle = new();
+
+    protected override void OnInitialized()
+    {
+        if (!Session.EstaLogueado)
+        {
+            Nav.NavigateTo("/login");
+            return;
+        }
+
+        Hasta = DateTime.Today;
+        Desde = DateTime.Today.AddMonths(-1);
+
+        CargarReporte();
+    }
+
+    private void Aplicar() => CargarReporte();
+
+    private void LimpiarListas()
+    {
+        ReporteProductores = new();
+        ReporteProductos = new();
+        ReporteGastoMes = new();
+        ReporteUsuarios = new();
+        ResumenAdmin = new();
+        ResumenUsuario = new();
+        InventarioResumen = new();
+        InventarioDetalle = new();
+    }
+
+    private void CargarReporte()
+    {
+        MensajeError = null;
+
+        if (Desde.Date > Hasta.Date)
+        {
+            MensajeError = "La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.";
+            return;
+        }
+
+        LimpiarListas();
+
+        if (Session.EsAdmin)
+        {
+            switch (TipoReporteAdmin)
+            {
+                case 0:
+                    ResumenAdmin = EstadisticasService.ObtenerResumenAdmin(Desde.Date, Hasta.Date);
+                    break;
+                case 1:
+                    ReporteProductores = EstadisticasService.ObtenerProductoresMasComprados(Desde.Date, Hasta.Date);
+                    break;
+                case 2:
+                    ReporteProductos = EstadisticasService.ObtenerProductosMasComprados(Desde.Date, Hasta.Date);
+                    break;
+                case 3:
+                    ReporteGastoMes = EstadisticasService.ObtenerGastoPorMes(Desde.Date, Hasta.Date);
+                    break;
+                case 4:
+                    ReporteUsuarios = EstadisticasService.ObtenerUsuariosTop(Desde.Date, Hasta.Date);
+                    break;
+                case 5:
+                    var inv = EstadisticasService.ObtenerInventarioPorProductor();
+                    InventarioResumen = inv.Resumen;
+                    InventarioDetalle = inv.Detalle;
+                    break;
+            }
+        }
+        else
+        {
+            var usuario = Session.UsuarioActual?.Username ?? "";
+            if (string.IsNullOrWhiteSpace(usuario))
+            {
+                MensajeError = "No se pudo identificar el usuario actual.";
+                return;
+            }
+
+            switch (TipoReporteUsuario)
+            {
+                case 10:
+                    ResumenUsuario = EstadisticasService.ObtenerResumenUsuario(Desde.Date, Hasta.Date, usuario);
+                    break;
+                case 11:
+                    ReporteProductores = EstadisticasService.ObtenerProductoresMasComprados(Desde.Date, Hasta.Date, usuario);
+                    break;
+                case 12:
+                    ReporteProductos = EstadisticasService.ObtenerProductosMasComprados(Desde.Date, Hasta.Date, usuario);
+                    break;
+                case 13:
+                    ReporteGastoMes = EstadisticasService.ObtenerGastoPorMes(Desde.Date, Hasta.Date, usuario);
+                    break;
+            }
+        }
+    }
+
+    private string FormatearColones(decimal valor)
+        => "₡" + valor.ToString("#,0.00", CultureInfo.InvariantCulture);
+}

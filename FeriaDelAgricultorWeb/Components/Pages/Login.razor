@@ -1,0 +1,220 @@
+﻿@page "/login"
+@rendermode InteractiveServer
+@layout FeriaDelAgricultorWeb.Components.Layout.AuthLayout
+
+@using FeriaDelAgricultorController
+@using FeriaDelAgricultorModels
+@using FeriaDelAgricultorWeb.Services
+
+@inject LoginController LoginController
+@inject SessionUsuarioService SessionUsuarioService
+@inject NavigationManager NavigationManager
+
+<div class="auth-card">
+    <div class="auth-left">
+        <div class="auth-hero">
+            <div class="auth-title">Feria del Agricultor</div>
+            <div class="auth-subtitle">Accede para iniciar tu compra.</div>
+
+            <div class="auth-illustration" aria-hidden="true">
+                <div class="moon"></div>
+                <div class="hill hill-1"></div>
+                <div class="hill hill-2"></div>
+                <div class="stars"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-right">
+        <h2 class="auth-form-title">Inicio de sesión</h2>
+
+        @if (!string.IsNullOrWhiteSpace(MensajeError))
+        {
+            <div class="alert alert-danger" style="margin-top:12px;">
+                @MensajeError
+            </div>
+        }
+
+        <div class="mb-3" style="margin-top:16px;">
+            <label class="form-label"><b>Usuario</b></label>
+            <input class="form-control" @bind="UserName" autocomplete="username" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label"><b>Contraseña</b></label>
+            <input class="form-control" type="password" @bind="Password" autocomplete="current-password" />
+        </div>
+
+        <button class="btn btn-primary w-100" @onclick="Ingresar">
+            Ingresar
+        </button>
+    </div>
+</div>
+
+<style>
+    .auth-bg {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: radial-gradient(1200px 600px at 20% 20%, #7c5cff 0%, #4327b8 40%, #2a167a 100%);
+    }
+
+    .auth-shell {
+        width: 100%;
+        max-width: 1100px;
+    }
+
+    .auth-card {
+        display: flex;
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 18px 60px rgba(0,0,0,.25);
+        background: #ffffff;
+        min-height: 520px;
+    }
+
+    .auth-left {
+        flex: 1.1;
+        background: linear-gradient(135deg, #6f4dff 0%, #3a20c9 60%, #2a167a 100%);
+        color: #fff;
+        padding: 28px;
+        position: relative;
+    }
+
+    .auth-hero {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .auth-title {
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: .2px;
+    }
+
+    .auth-subtitle {
+        font-size: 14px;
+        opacity: .9;
+        margin-top: 6px;
+    }
+
+    .auth-illustration {
+        position: relative;
+        height: 320px;
+        border-radius: 14px;
+        background: rgba(255,255,255,.08);
+        overflow: hidden;
+        margin-top: 18px;
+    }
+
+    .moon {
+        position: absolute;
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.9);
+        top: 45px;
+        left: 60px;
+        box-shadow: 0 0 40px rgba(255,255,255,.35);
+    }
+
+    .stars {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255,255,255,.75) 1px, transparent 1px), radial-gradient(rgba(255,255,255,.45) 1px, transparent 1px);
+        background-size: 36px 36px, 64px 64px;
+        background-position: 0 0, 12px 18px;
+        opacity: .55;
+    }
+
+    .hill {
+        position: absolute;
+        width: 140%;
+        height: 220px;
+        border-radius: 50%;
+        bottom: -120px;
+        left: -20%;
+        background: rgba(0,0,0,.16);
+    }
+
+    .hill-1 {
+        bottom: -130px;
+        opacity: .35;
+    }
+
+    .hill-2 {
+        bottom: -150px;
+        left: -10%;
+        opacity: .22;
+    }
+
+    .auth-right {
+        flex: .9;
+        padding: 32px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #fff;
+    }
+
+    .auth-form-title {
+        font-size: 24px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    @media (max-width: 980px) {
+        .auth-card
+
+    {
+        flex-direction: column;
+    }
+
+    .auth-left {
+        min-height: 260px;
+    }
+
+    .auth-illustration {
+        height: 220px;
+    }
+
+    }
+</style>
+
+@code {
+    private string UserName = string.Empty;
+    private string Password = string.Empty;
+    private string? MensajeError;
+
+    /// <summary>
+    /// El método realiza la autenticación del usuario con las credenciales ingresadas
+    /// y establece la sesión si la autenticación es válida.
+    /// </summary>
+    private void Ingresar()
+    {
+        MensajeError = null;
+
+        if (string.IsNullOrWhiteSpace(UserName) || string.IsNullOrWhiteSpace(Password))
+        {
+            MensajeError = "Debe ingresar usuario y contraseña.";
+            return;
+        }
+
+        var usuario = LoginController.Login(UserName.Trim(), Password);
+
+        if (usuario == null)
+        {
+            MensajeError = "Credenciales inválidas. Verifique usuario y contraseña.";
+            return;
+        }
+
+        SessionUsuarioService.IniciarSesion(usuario);
+
+        // Después del login, entra al flujo normal del sistema
+        NavigationManager.NavigateTo("/feria", forceLoad: false);
+    }
+}

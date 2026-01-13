@@ -1,4 +1,6 @@
 ﻿@page "/feria"
+@rendermode InteractiveServer
+
 @using FeriaDelAgricultorModels
 @using FeriaDelAgricultorController
 @inject PuntoFeriaService PuntoFeriaService
@@ -11,7 +13,9 @@
 <div class="row" style="gap:16px; display:flex; flex-wrap:wrap; margin-bottom:16px;">
     <div style="min-width:260px;">
         <label><b>Provincia</b></label><br />
-        <select class="form-select" @onchange="OnProvinciaChanged">
+        <select class="form-select"
+                @bind="ProvinciaSeleccionada"
+                @bind:after="OnProvinciaChanged">
             <option value="">-- Seleccione --</option>
             @foreach (var p in Provincias)
             {
@@ -22,7 +26,10 @@
 
     <div style="min-width:260px;">
         <label><b>Cantón</b></label><br />
-        <select class="form-select" @onchange="OnCantonChanged" disabled="@(!ProvinciaSeleccionadaOk)">
+        <select class="form-select"
+                disabled="@(!ProvinciaSeleccionadaOk)"
+                @bind="CantonSeleccionado"
+                @bind:after="OnCantonChanged">
             <option value="">-- Seleccione --</option>
             @foreach (var c in Cantones)
             {
@@ -33,7 +40,10 @@
 
     <div style="min-width:320px;">
         <label><b>Punto de feria</b></label><br />
-        <select class="form-select" @onchange="OnFeriaChanged" disabled="@(!CantonSeleccionadoOk)">
+        <select class="form-select"
+                disabled="@(!CantonSeleccionadoOk)"
+                @bind="FeriaSeleccionadaId"
+                @bind:after="OnFeriaChanged">
             <option value="">-- Seleccione --</option>
             @foreach (var f in Ferias)
             {
@@ -151,19 +161,32 @@
     private bool ProvinciaSeleccionadaOk => !string.IsNullOrWhiteSpace(ProvinciaSeleccionada);
     private bool CantonSeleccionadoOk => !string.IsNullOrWhiteSpace(CantonSeleccionado);
 
+    // Selecciones
     private string? ProvinciaSeleccionada;
     private string? CantonSeleccionado;
+    private int? FeriaSeleccionadaId;
 
     protected override void OnInitialized()
     {
-        // Carga provincias desde PuntosFeria.csv (vía tu servicio)
         Provincias = PuntoFeriaService.ObtenerProvincias();
+
+        ProvinciaSeleccionada = null;
+        CantonSeleccionado = null;
+        FeriaSeleccionadaId = null;
+
+        Cantones = new List<string>();
+        Ferias = new List<PuntoFeria>();
+        FeriaSeleccionada = null;
+
+        ProductoresDeFeria = new List<Productor>();
+        ProductorSeleccionado = null;
+        ProductosDelPuesto = new List<Producto>();
     }
 
-    private void OnProvinciaChanged(ChangeEventArgs e)
+    private void OnProvinciaChanged()
     {
-        ProvinciaSeleccionada = e.Value?.ToString();
         CantonSeleccionado = null;
+        FeriaSeleccionadaId = null;
 
         Cantones = string.IsNullOrWhiteSpace(ProvinciaSeleccionada)
             ? new List<string>()
@@ -177,9 +200,9 @@
         ProductosDelPuesto = new List<Producto>();
     }
 
-    private void OnCantonChanged(ChangeEventArgs e)
+    private void OnCantonChanged()
     {
-        CantonSeleccionado = e.Value?.ToString();
+        FeriaSeleccionadaId = null;
 
         Ferias = (!string.IsNullOrWhiteSpace(ProvinciaSeleccionada) && !string.IsNullOrWhiteSpace(CantonSeleccionado))
             ? PuntoFeriaService.ObtenerPuntosPorProvinciaYCanton(ProvinciaSeleccionada, CantonSeleccionado)
@@ -192,15 +215,13 @@
         ProductosDelPuesto = new List<Producto>();
     }
 
-    private void OnFeriaChanged(ChangeEventArgs e)
+    private void OnFeriaChanged()
     {
-        if (int.TryParse(e.Value?.ToString(), out int id))
+        FeriaSeleccionada = null;
+
+        if (FeriaSeleccionadaId.HasValue)
         {
-            FeriaSeleccionada = Ferias.FirstOrDefault(x => x.Id == id);
-        }
-        else
-        {
-            FeriaSeleccionada = null;
+            FeriaSeleccionada = Ferias.FirstOrDefault(x => x.Id == FeriaSeleccionadaId.Value);
         }
 
         ProductoresDeFeria = new List<Productor>();
@@ -209,7 +230,6 @@
 
         if (FeriaSeleccionada != null)
         {
-            // Cargar productores por PuntoFeriaId (tu Productores.csv)
             ProductoresDeFeria = ProductorService.ObtenerPorPuntoFeria(FeriaSeleccionada.Id);
         }
     }
@@ -226,14 +246,12 @@
 
         if (ProductorSeleccionado != null)
         {
-            // Cargar productos por puesto (match con Productos.csv -> Productor == NombrePuesto)
             ProductosDelPuesto = ProductoService.ObtenerPorProductor(ProductorSeleccionado.NombrePuesto);
         }
     }
 
     private void AgregarAlCarrito(Producto p)
     {
-        // Agrega una copia (para que no se altere el “stock” del catálogo)
         CarritoService.AgregarProducto(new Producto
         {
             Productor = p.Productor,

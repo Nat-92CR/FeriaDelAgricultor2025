@@ -1,0 +1,212 @@
+﻿@page "/admin-productos"
+@using FeriaDelAgricultorModels
+@inject FeriaDelAgricultorController.ProductoService ProductoService
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<h3>Admin - Productos / Inventario</h3>
+
+@if (!Session.EsAdmin)
+{
+    <div class="alert alert-danger">No autorizado.</div>
+}
+else
+{
+    @if (!string.IsNullOrWhiteSpace(MsgOk))
+    {
+        <div class="alert alert-success">@MsgOk</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(MsgErr))
+    {
+        <div class="alert alert-danger">@MsgErr</div>
+    }
+
+    <div class="card p-3 mb-3">
+        <h5>@(Editando ? "Editar producto" : "Crear producto")</h5>
+
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input class="form-control" placeholder="Productor (NombrePuesto)" @bind="Form.Productor" disabled="@Editando" />
+            </div>
+            <div class="col-md-3">
+                <input class="form-control" placeholder="NombreProducto" @bind="Form.NombreProducto" disabled="@Editando" />
+            </div>
+
+            <div class="col-md-2">
+                <input class="form-control" placeholder="Precio" @bind="PrecioTxt" />
+            </div>
+            <div class="col-md-2">
+                <input class="form-control" placeholder="Stock" @bind="StockTxt" />
+            </div>
+
+            <div class="col-md-2">
+                <select class="form-select" @bind="Form.UnidadMedida">
+                    @foreach (var u in Enum.GetValues<UnidadMedida>())
+                    {
+                        <option value="@u">@u</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100" @onclick="Guardar">
+                    @(Editando ? "Guardar cambios" : "Crear")
+                </button>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-light w-100" @onclick="Limpiar">Limpiar</button>
+            </div>
+        </div>
+
+        <small class="text-muted">
+            Nota: Para evitar duplicados, en edición se bloquea Productor + NombreProducto.
+        </small>
+    </div>
+
+    <div class="card p-3">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5>Listado</h5>
+            <input class="form-control" style="max-width:320px;" placeholder="Buscar..." @bind="Filtro" />
+        </div>
+
+        <table class="table table-sm table-striped align-middle mt-2">
+            <thead>
+                <tr>
+                    <th>Productor</th>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Stock</th>
+                    <th>Unidad</th>
+                    <th style="width:220px;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Filtrados())
+                {
+                    <tr>
+                        <td>@p.Productor</td>
+                        <td>@p.NombreProducto</td>
+                        <td>@p.Precio</td>
+                        <td>@p.Cantidad</td>
+                        <td>@p.UnidadMedida</td>
+                        <td>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-secondary btn-sm" @onclick="(() => Editar(p))">Editar</button>
+                                <button class="btn btn-outline-danger btn-sm" @onclick="(() => Eliminar(p))">Eliminar</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    private List<Producto> Lista = new();
+    private string? MsgOk;
+    private string? MsgErr;
+
+    private bool Editando = false;
+    private Producto Form = new Producto();
+
+    private string PrecioTxt = "";
+    private string StockTxt = "";
+    private string Filtro = "";
+
+    protected override void OnInitialized()
+    {
+        if (!Session.EstaLogueado) { Nav.NavigateTo("/login"); return; }
+        if (!Session.EsAdmin) { Nav.NavigateTo("/"); return; }
+        Cargar();
+    }
+
+    private void Cargar()
+    {
+        MsgOk = MsgErr = null;
+        Lista = ProductoService.ObtenerTodos()
+                               .OrderBy(x => x.Productor)
+                               .ThenBy(x => x.NombreProducto)
+                               .ToList();
+    }
+
+    private IEnumerable<Producto> Filtrados()
+    {
+        var f = (Filtro ?? "").Trim();
+        if (string.IsNullOrWhiteSpace(f)) return Lista;
+
+        return Lista.Where(x =>
+            (x.Productor ?? "").Contains(f, StringComparison.OrdinalIgnoreCase) ||
+            (x.NombreProducto ?? "").Contains(f, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private void Limpiar()
+    {
+        Editando = false;
+        Form = new Producto();
+        PrecioTxt = "";
+        StockTxt = "";
+        MsgOk = MsgErr = null;
+    }
+
+    private void Editar(Producto p)
+    {
+        Editando = true;
+
+        Form = new Producto
+        {
+            Productor = p.Productor,
+            NombreProducto = p.NombreProducto,
+            Precio = p.Precio,
+            Cantidad = p.Cantidad,
+            UnidadMedida = p.UnidadMedida
+        };
+
+        PrecioTxt = p.Precio.ToString();
+        StockTxt = p.Cantidad.ToString();
+    }
+
+    private void Guardar()
+    {
+        MsgOk = MsgErr = null;
+
+        if (string.IsNullOrWhiteSpace(Form.Productor) || string.IsNullOrWhiteSpace(Form.NombreProducto))
+        {
+            MsgErr = "Productor y NombreProducto son obligatorios.";
+            return;
+        }
+
+        if (!decimal.TryParse(PrecioTxt, out var precio)) { MsgErr = "Precio inválido."; return; }
+        if (!int.TryParse(StockTxt, out var stock)) { MsgErr = "Stock inválido."; return; }
+
+        Form.Precio = precio;
+        Form.Cantidad = stock;
+
+        bool ok = Editando
+            ? ProductoService.ActualizarProducto(Form)
+            : ProductoService.AgregarProducto(Form);
+
+        if (!ok)
+        {
+            MsgErr = Editando
+                ? "No se pudo actualizar."
+                : "No se pudo crear (posible duplicado Productor+Producto).";
+            return;
+        }
+
+        MsgOk = Editando ? "Producto actualizado." : "Producto creado.";
+        Limpiar();
+        Cargar();
+    }
+
+    private void Eliminar(Producto p)
+    {
+        MsgOk = MsgErr = null;
+
+        var ok = ProductoService.EliminarProducto(p.Productor, p.NombreProducto);
+        if (!ok) { MsgErr = "No se pudo eliminar."; return; }
+
+        MsgOk = "Eliminado.";
+        Cargar();
+    }
+}

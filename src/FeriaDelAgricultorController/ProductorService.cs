@@ -15,14 +15,10 @@ namespace FeriaDelAgricultorController
     /// </summary>
     public class ProductorService
     {
-        private const string NombreArchivo = "Productores.csv";
-
-        /// <summary>Lista interna con todos los productores cargados.</summary>
-        private readonly List<Productor> productores;
+        private List<Productor> productores;
 
         /// <summary>
-        /// Constructor. Al instanciar el servicio se cargan los productores
-        /// desde el archivo CSV ubicado en la carpeta Data del ejecutable.
+        /// Constructor: carga la lista de productores en memoria.
         /// </summary>
         public ProductorService()
         {
@@ -38,9 +34,8 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Devuelve los productores que pertenecen a un punto de feria específico.
+        /// Devuelve productores filtrados por PuntoFeriaId.
         /// </summary>
-        /// <param name="puntoFeriaId">Id del punto de feria.</param>
         public List<Productor> ObtenerPorPuntoFeria(int puntoFeriaId)
         {
             return productores
@@ -48,66 +43,114 @@ namespace FeriaDelAgricultorController
                 .ToList();
         }
 
-        /// <summary>
-        /// Lee el archivo CSV Productores.csv (ubicado en la carpeta Data)
-        /// y construye la lista de productores.
-        /// </summary>
-        private static List<Productor> CargarProductores()
+        private List<Productor> CargarProductores()
         {
             var lista = new List<Productor>();
 
-            // Ruta: [carpeta del exe]\Data\Productores.csv
-            string ruta = Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory,
-                "Data",
-                NombreArchivo);
-
-            if (!File.Exists(ruta))
+            try
             {
-                return lista;
+                var ruta = Generales.FileNameProductores;
+
+                if (!File.Exists(ruta))
+                    return lista;
+
+                var lineas = File.ReadAllLines(ruta);
+
+                // Saltar encabezado
+                for (int i = 1; i < lineas.Length; i++)
+                {
+                    var linea = lineas[i];
+                    if (string.IsNullOrWhiteSpace(linea)) continue;
+
+                    var partes = linea.Split(';');
+                    if (partes.Length < 6) continue;
+
+                    if (!int.TryParse(partes[0], out int id))
+                        continue;
+
+                    string nombrePuesto = partes[1];
+                    string ubicacion = partes[2];
+                    string telefono = partes[3];
+
+                    if (!int.TryParse(partes[4], out int puntoFeriaId))
+                        continue;
+
+                    string dueno = partes[5];
+
+                    lista.Add(new Productor(id, nombrePuesto, ubicacion, telefono, puntoFeriaId, dueno));
+                }
             }
-
-            var lineas = File.ReadAllLines(ruta)
-                             .Skip(1) // omitir encabezado
-                             .Where(l => !string.IsNullOrWhiteSpace(l));
-
-            foreach (var linea in lineas)
+            catch
             {
-                var partes = linea.Split(';');
-
-                // 0 Id
-                // 1 NombrePuesto
-                // 2 Ubicacion
-                // 3 Telefono
-                // 4 PuntoFeriaId
-                // 5 Dueno
-                if (partes.Length < 6)
-                    continue;
-
-                if (!int.TryParse(partes[0], out int id))
-                    continue;
-
-                string nombrePuesto = partes[1].Trim();
-                string ubicacion = partes[2].Trim();
-                string telefono = partes[3].Trim();
-
-                if (!int.TryParse(partes[4], out int puntoFeriaId))
-                    continue;
-
-                string dueno = partes[5].Trim();
-
-                var productor = new Productor(
-                    id,
-                    nombrePuesto,
-                    ubicacion,
-                    telefono,
-                    puntoFeriaId,
-                    dueno);
-
-                lista.Add(productor);
+                // si falla carga, devolvemos lista vacía
+                return new List<Productor>();
             }
 
             return lista;
+        }
+
+        // ==========================
+        // ✅ CRUD PARA ADMIN (CSV)
+        // ==========================
+
+        public bool GuardarTodos(List<Productor> lista)
+        {
+            try
+            {
+                var ruta = Generales.FileNameProductores;
+
+                var encabezado = "Id;NombrePuesto;Ubicacion;Telefono;PuntoFeriaId;Dueno";
+                var lineas = new List<string> { encabezado };
+
+                foreach (var p in lista.OrderBy(x => x.Id))
+                {
+                    lineas.Add($"{p.Id};{p.NombrePuesto};{p.Ubicacion};{p.Telefono};{p.PuntoFeriaId};{p.Dueno}");
+                }
+
+                File.WriteAllLines(ruta, lineas);
+                productores = lista; // refrescar cache
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool Crear(Productor nuevo)
+        {
+            var lista = productores.ToList();
+
+            if (nuevo.Id <= 0)
+            {
+                var next = (lista.Count == 0) ? 1 : lista.Max(x => x.Id) + 1;
+                nuevo.Id = next;
+            }
+
+            if (lista.Any(x => x.Id == nuevo.Id)) return false;
+
+            lista.Add(nuevo);
+            return GuardarTodos(lista);
+        }
+
+        public bool Actualizar(Productor actualizado)
+        {
+            var lista = productores.ToList();
+            var idx = lista.FindIndex(x => x.Id == actualizado.Id);
+            if (idx < 0) return false;
+
+            lista[idx] = actualizado;
+            return GuardarTodos(lista);
+        }
+
+        public bool Eliminar(int id)
+        {
+            var lista = productores.ToList();
+            var obj = lista.FirstOrDefault(x => x.Id == id);
+            if (obj == null) return false;
+
+            lista.Remove(obj);
+            return GuardarTodos(lista);
         }
     }
 }

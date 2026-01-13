@@ -1,0 +1,111 @@
+﻿@implements IDisposable
+@inject FeriaDelAgricultorWeb.Services.SessionUsuarioService Session
+@inject NavigationManager Nav
+
+<nav class="nav flex-column">
+    <!-- Hogar siempre visible -->
+    <div class="nav-item px-3">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            Hogar
+        </NavLink>
+    </div>
+
+    @if (Session.EstaLogueado)
+    {
+        @* =========================
+           MENÚ PARA CLIENTE
+           ========================= *@
+        @if (Session.EsCliente)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="feria">
+                    Feria (comprar)
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="carrito">
+                    Carrito
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="estadisticas">
+                    Estadísticas / Reportes
+                </NavLink>
+            </div>
+        }
+
+        @* =========================
+           MENÚ PARA ADMIN
+           ========================= *@
+        @if (Session.EsAdmin)
+        {
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin">
+                    Panel Admin
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin-usuarios">
+                    Admin Usuarios
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin-productores">
+                    Admin Productores
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="admin-productos">
+                    Admin Productos
+                </NavLink>
+            </div>
+
+            <div class="nav-item px-3">
+                <NavLink class="nav-link" href="estadisticas">
+                    Estadísticas / Reportes
+                </NavLink>
+            </div>
+        }
+
+        @* =========================
+           BOTÓN CERRAR SESIÓN
+           ========================= *@
+        <div class="nav-item px-3 mt-2">
+            <button class="btn btn-sm btn-danger w-100" @onclick="CerrarSesion">
+                Cerrar sesión
+            </button>
+        </div>
+    }
+    else
+    {
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="login">
+                Iniciar sesión
+            </NavLink>
+        </div>
+    }
+</nav>
+
+@code {
+    protected override void OnInitialized()
+    {
+        // ✅ Para refrescar el menú cuando cambia sesión
+        Session.OnChange += StateHasChanged;
+    }
+
+    private void CerrarSesion()
+    {
+        Session.CerrarSesion();
+        Nav.NavigateTo("/login");
+    }
+
+    public void Dispose()
+    {
+        Session.OnChange -= StateHasChanged;
+    }
+}
