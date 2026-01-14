@@ -10,7 +10,16 @@ namespace FeriaDelAgricultorUI
     /// </summary>
     public partial class ReporteEstadisticasView : Form
     {
-        private readonly EstadisticasService estadisticasService = new EstadisticasService();
+        /// <summary>
+        /// Servicio de productos (lee Productos.csv) requerido por EstadisticasService.
+        /// </summary>
+        private readonly ProductoService productoService;
+
+        /// <summary>
+        /// Servicio de estadísticas (lee Facturas.csv y arma reportes).
+        /// Requiere ProductoService en el constructor.
+        /// </summary>
+        private readonly EstadisticasService estadisticasService;
 
         /// <summary>
         /// Inicializa una nueva instancia de <see cref="ReporteEstadisticasView"/>.
@@ -18,6 +27,10 @@ namespace FeriaDelAgricultorUI
         public ReporteEstadisticasView()
         {
             InitializeComponent();
+
+            // ✅ Inicializamos las dependencias para evitar el error CS7036.
+            productoService = new ProductoService();
+            estadisticasService = new EstadisticasService(productoService);
         }
 
         /// <summary>
@@ -178,9 +191,10 @@ namespace FeriaDelAgricultorUI
             }
 
             // Columnas técnicas que no hace falta mostrar
-            if (dgvResultados.Columns["Año"] != null)
+            // (OJO: en tu DTO se llama "Anio" (sin ñ). Por eso ocultamos "Anio" y "MesNumero".)
+            if (dgvResultados.Columns["Anio"] != null)
             {
-                dgvResultados.Columns["Año"].Visible = false;
+                dgvResultados.Columns["Anio"].Visible = false;
             }
 
             if (dgvResultados.Columns["MesNumero"] != null)

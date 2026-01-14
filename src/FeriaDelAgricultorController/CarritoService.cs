@@ -6,19 +6,30 @@ using System.Linq;
 namespace FeriaDelAgricultorController
 {
     /// <summary>
-    /// Servicio que administra el carrito de compras del cliente.
-    /// Maneja la lista de productos agregados, sus cantidades y cálculos de total.
+    /// SUMMARY:
+    /// Servicio de lógica de negocio encargado de administrar el carrito de compras del cliente.
+    /// Permite agregar, actualizar, eliminar y consultar productos dentro del carrito,
+    /// así como calcular el total a pagar.
+    ///
+    /// El carrito maneja productos únicos identificados por la combinación
+    /// Productor + NombreProducto, acumulando la cantidad correspondiente.
     /// </summary>
     public class CarritoService
     {
         /// <summary>
-        /// Lista interna de productos en el carrito.
-        /// Cada elemento representa un producto único (por Productor + NombreProducto) con su cantidad acumulada.
+        /// SUMMARY:
+        /// Lista interna que almacena los productos agregados al carrito.
+        /// Cada elemento representa un producto único (por Productor + NombreProducto)
+        /// con su cantidad acumulada.
+        ///
+        /// Esta lista no se expone directamente para mantener el encapsulamiento.
         /// </summary>
         private readonly List<Producto> items;
 
         /// <summary>
-        /// Inicializa un carrito vacío.
+        /// SUMMARY:
+        /// Constructor del servicio.
+        /// Inicializa el carrito como una lista vacía de productos.
         /// </summary>
         public CarritoService()
         {
@@ -26,8 +37,13 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Devuelve una copia de la lista de productos en el carrito.
+        /// SUMMARY:
+        /// Devuelve una copia de la lista de productos actualmente almacenados en el carrito.
+        /// Se retorna una copia para evitar que código externo modifique la lista interna.
         /// </summary>
+        /// <returns>
+        /// Lista de productos (copias) con su nombre, precio, cantidad, unidad de medida y productor.
+        /// </returns>
         public List<Producto> ObtenerProductos()
         {
             return items
@@ -43,10 +59,13 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Agrega un producto al carrito usando la cantidad que venga en el objeto (producto.Cantidad).
-        /// Si producto.Cantidad es menor o igual a 0, se asume 1.
+        /// SUMMARY:
+        /// Agrega un producto al carrito utilizando la cantidad incluida en el objeto Producto.
+        /// Si la cantidad es menor o igual a 0, se asume automáticamente una cantidad de 1.
         /// </summary>
-        /// <param name="producto">Producto a agregar.</param>
+        /// <param name="producto">
+        /// Producto a agregar al carrito. No puede ser null.
+        /// </param>
         public void AgregarProducto(Producto producto)
         {
             if (producto == null) throw new ArgumentNullException(nameof(producto));
@@ -56,12 +75,20 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Agrega un producto al carrito.
-        /// Si ya existe el mismo producto (mismo productor y nombre), se suma la cantidad.
-        /// Si no existe, se agrega como nuevo.
+        /// SUMMARY:
+        /// Agrega un producto al carrito con una cantidad específica.
+        ///
+        /// Reglas:
+        /// - Si el producto ya existe (mismo Productor y NombreProducto), se suma la cantidad.
+        /// - Si no existe, se agrega como un nuevo producto.
+        /// - Si la cantidad es menor o igual a 0, se corrige automáticamente a 1.
         /// </summary>
-        /// <param name="producto">Producto a agregar.</param>
-        /// <param name="cantidad">Cantidad a sumar (mínimo 1).</param>
+        /// <param name="producto">
+        /// Producto a agregar. Debe tener Productor y NombreProducto válidos.
+        /// </param>
+        /// <param name="cantidad">
+        /// Cantidad a agregar al carrito (mínimo 1).
+        /// </param>
         public void AgregarProducto(Producto producto, int cantidad)
         {
             if (producto == null) throw new ArgumentNullException(nameof(producto));
@@ -96,9 +123,13 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Obtiene la cantidad actual de un producto en el carrito.
-        /// Retorna 0 si no existe.
+        /// SUMMARY:
+        /// Obtiene la cantidad actual de un producto específico dentro del carrito.
+        /// Si el producto no existe o los parámetros son inválidos, retorna 0.
         /// </summary>
+        /// <param name="productor">Nombre del productor o puesto.</param>
+        /// <param name="nombreProducto">Nombre del producto.</param>
+        /// <returns>Cantidad actual del producto en el carrito.</returns>
         public int ObtenerCantidad(string productor, string nombreProducto)
         {
             if (string.IsNullOrWhiteSpace(productor) || string.IsNullOrWhiteSpace(nombreProducto))
@@ -112,12 +143,13 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Actualiza la cantidad de un producto ya existente en el carrito.
-        /// Si la cantidad nueva es 0 o menor, el producto se elimina del carrito.
+        /// SUMMARY:
+        /// Actualiza la cantidad de un producto existente en el carrito.
+        /// Si la nueva cantidad es menor o igual a 0, el producto se elimina del carrito.
         /// </summary>
-        /// <param name="productor">Nombre del puesto/productor.</param>
+        /// <param name="productor">Nombre del productor o puesto.</param>
         /// <param name="nombreProducto">Nombre del producto.</param>
-        /// <param name="cantidadNueva">Cantidad nueva.</param>
+        /// <param name="cantidadNueva">Nueva cantidad a asignar.</param>
         public void ActualizarCantidad(string productor, string nombreProducto, int cantidadNueva)
         {
             if (string.IsNullOrWhiteSpace(productor) || string.IsNullOrWhiteSpace(nombreProducto))
@@ -139,20 +171,20 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Actualiza la cantidad y devuelve el delta (diferencia) respecto a lo anterior:
-        /// delta = cantidadNueva - cantidadAnterior
+        /// SUMMARY:
+        /// Actualiza la cantidad de un producto y retorna el delta de la operación,
+        /// es decir, la diferencia entre la cantidad nueva y la anterior.
         ///
-        /// - Si delta > 0: el usuario está agregando más unidades.
-        /// - Si delta < 0: el usuario está quitando unidades.
-        ///
-        /// Esto es clave para sincronizar inventario con ProductoService.
+        /// Este valor es utilizado para sincronizar cambios con el inventario.
         /// </summary>
-        /// <returns>Delta (cantidadNueva - cantidadAnterior).</returns>
+        /// <param name="productor">Nombre del productor o puesto.</param>
+        /// <param name="nombreProducto">Nombre del producto.</param>
+        /// <param name="cantidadNueva">Nueva cantidad deseada.</param>
+        /// <returns>Diferencia entre la cantidad nueva y la anterior.</returns>
         public int ActualizarCantidadConDelta(string productor, string nombreProducto, int cantidadNueva)
         {
             int anterior = ObtenerCantidad(productor, nombreProducto);
 
-            // Reutilizamos la lógica existente
             ActualizarCantidad(productor, nombreProducto, cantidadNueva);
 
             int actual = ObtenerCantidad(productor, nombreProducto);
@@ -160,8 +192,12 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Elimina un producto específico del carrito (por productor + nombre de producto).
+        /// SUMMARY:
+        /// Elimina un producto específico del carrito utilizando productor y nombre del producto.
+        /// Si el producto no existe, no se realiza ninguna acción.
         /// </summary>
+        /// <param name="productor">Nombre del productor o puesto.</param>
+        /// <param name="nombreProducto">Nombre del producto.</param>
         public void EliminarProducto(string productor, string nombreProducto)
         {
             if (string.IsNullOrWhiteSpace(productor) || string.IsNullOrWhiteSpace(nombreProducto))
@@ -178,9 +214,13 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Elimina un producto y retorna cuántas unidades se eliminaron.
-        /// (Útil para reponer inventario en ProductoService.)
+        /// SUMMARY:
+        /// Elimina un producto del carrito y retorna la cantidad que tenía.
+        /// Este método es útil para reponer inventario cuando un producto se elimina del carrito.
         /// </summary>
+        /// <param name="productor">Nombre del productor o puesto.</param>
+        /// <param name="nombreProducto">Nombre del producto.</param>
+        /// <returns>Cantidad eliminada del carrito.</returns>
         public int EliminarProductoYRetornarCantidad(string productor, string nombreProducto)
         {
             if (string.IsNullOrWhiteSpace(productor) || string.IsNullOrWhiteSpace(nombreProducto))
@@ -198,7 +238,8 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Vacía completamente el carrito.
+        /// SUMMARY:
+        /// Vacía completamente el carrito eliminando todos los productos.
         /// </summary>
         public void VaciarCarrito()
         {
@@ -206,9 +247,11 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Vacía el carrito y retorna la lista de items que estaban dentro (copias),
-        /// incluyendo sus cantidades, para poder reponer inventario.
+        /// SUMMARY:
+        /// Vacía el carrito y retorna una lista con los productos que estaban dentro,
+        /// incluyendo sus cantidades, para permitir la reposición de inventario.
         /// </summary>
+        /// <returns>Lista de productos que estaban en el carrito antes de vaciarlo.</returns>
         public List<Producto> VaciarYRetornarItems()
         {
             var copia = ObtenerProductos();
@@ -217,8 +260,11 @@ namespace FeriaDelAgricultorController
         }
 
         /// <summary>
-        /// Calcula el total a pagar del carrito (precio * cantidad).
+        /// SUMMARY:
+        /// Calcula el total a pagar del carrito multiplicando el precio por la cantidad
+        /// de cada producto y sumando los resultados.
         /// </summary>
+        /// <returns>Total a pagar por el contenido del carrito.</returns>
         public decimal ObtenerTotal()
         {
             return items.Sum(p => (decimal)p.Precio * p.Cantidad);

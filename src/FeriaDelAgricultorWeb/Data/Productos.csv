@@ -1,63 +1,451 @@
 Productor;NombreProducto;Precio;Cantidad;UnidadMedida
-Agrícola San Pedro;Tomate;850;80;Kg
-Agrícola San Pedro;Papa;700;120;Kg
-Agrícola San Pedro;Cebolla;900;60;Kg
-Agrícola San Pedro;Lechuga;600;40;Unidades
-Agrícola San Pedro;Zanahoria;750;90;Kg
-Agrícola San Pedro;Chile Dulce;1200;50;Kg
-Agrícola San Pedro;Pepino;650;55;Kg
-Agrícola San Pedro;Culantro;300;70;Unidades
-
-Finca Los Volcanes;Fresa;1800;35;Kg
-Finca Los Volcanes;Mora;2200;30;Kg
-Finca Los Volcanes;Piña;1500;40;Unidades
-Finca Los Volcanes;Sandía;2500;25;Unidades
-Finca Los Volcanes;Melón;2000;28;Unidades
-Finca Los Volcanes;Papaya;1400;32;Unidades
-Finca Los Volcanes;Banano;900;80;Kg
-Finca Los Volcanes;Mango;1200;45;Kg
-
-Productores La Montaña;Café Molido 500g;2800;40;Unidades
-Productores La Montaña;Miel 250ml;2400;35;Unidades
-Productores La Montaña;Huevos (Docena);1800;25;Unidades
-Productores La Montaña;Queso Fresco 500g;3200;18;Unidades
-Productores La Montaña;Yogurt Natural 1L;2600;22;Litros
-Productores La Montaña;Pan Casero;1200;30;Unidades
-Productores La Montaña;Jalea de Guayaba;2100;20;Unidades
-Productores La Montaña;Mantequilla Artesanal;2900;15;Unidades
-
-Huerta Santa María;Espinaca;900;35;Unidades
-Huerta Santa María;Acelga;850;30;Unidades
-Huerta Santa María;Brócoli;1300;25;Kg
-Huerta Santa María;Coliflor;1400;20;Kg
-Huerta Santa María;Repollo;1200;25;Unidades
-Huerta Santa María;Remolacha;800;40;Kg
-Huerta Santa María;Ayote;1100;18;Unidades
-Huerta Santa María;Apio;950;22;Unidades
-
-Orgánicos del Valle;Arroz Integral 1kg;1800;50;Kg
-Orgánicos del Valle;Frijol Rojo 1kg;2200;40;Kg
-Orgánicos del Valle;Harina de Maíz 1kg;1600;45;Kg
-Orgánicos del Valle;Avena 1kg;2100;35;Kg
-Orgánicos del Valle;Granola 500g;2300;30;Unidades
-Orgánicos del Valle;Leche de Almendra 1L;2500;20;Litros
-Orgánicos del Valle;Azúcar Morena 1kg;1900;40;Kg
-Orgánicos del Valle;Sal Rosada 500g;1700;25;Unidades
-
-El Buen Productor;Naranja;900;80;Kg
-El Buen Productor;Limón;650;90;Kg
-El Buen Productor;Mandarina;1100;60;Kg
-El Buen Productor;Aguacate;1800;35;Kg
-El Buen Productor;Yuca;800;70;Kg
-El Buen Productor;Plátano;900;65;Kg
-El Buen Productor;Camote;950;55;Kg
-El Buen Productor;Jengibre;1400;25;Kg
-
-Finca Los Abuelos;Maíz Dulce;1200;40;Unidades
-Finca Los Abuelos;Chayote;700;90;Unidades
-Finca Los Abuelos;Pepino;650;70;Kg
-Finca Los Abuelos;Tomate Cherry;1600;35;Kg
-Finca Los Abuelos;Cebollín;500;50;Unidades
-Finca Los Abuelos;Pimiento;1700;30;Kg
-Finca Los Abuelos;Berenjena;1500;25;Kg
-Finca Los Abuelos;Calabacín;1300;28;Kg
+Agrícola El Progreso;Apio;1200;123;Kilogramos
+Agrícola El Progreso;Berenjena;1100;123;Kilogramos
+Agrícola El Progreso;Guayaba;1100;124;Kilogramos
+Agrícola El Progreso;Mandarina;1100;73;Kilogramos
+Agrícola El Progreso;Maracuyá;750;69;Kilogramos
+Agrícola El Progreso;Melón;2800;63;Unidades
+Agrícola El Progreso;Mora;1800;168;Kilogramos
+Agrícola El Progreso;Pepino;1100;161;Kilogramos
+Agrícola El Progreso;Pera;800;177;Kilogramos
+Agrícola El Progreso;Remolacha;2000;133;Kilogramos
+Agrícola El Progreso;Rábano;500;97;Kilogramos
+Agrícola El Progreso;Tomate;2200;63;Kilogramos
+Agrícola El Progreso;Uva;850;150;Kilogramos
+Agrícola El Progreso;Yam;1200;139;Kilogramos
+Agrícola El Progreso;Yuca;1800;117;Kilogramos
+Agrícola Las Lomas;Albahaca;750;141;Kilogramos
+Agrícola Las Lomas;Banano;1800;33;Kilogramos
+Agrícola Las Lomas;Calabacín;1600;126;Kilogramos
+Agrícola Las Lomas;Coco;2800;13;Unidades
+Agrícola Las Lomas;Coliflor;1200;136;Kilogramos
+Agrícola Las Lomas;Culantro;1800;100;Kilogramos
+Agrícola Las Lomas;Limón;1200;51;Kilogramos
+Agrícola Las Lomas;Manzana;1100;173;Kilogramos
+Agrícola Las Lomas;Maracuyá (bolsa);1800;110;Kilogramos
+Agrícola Las Lomas;Melón;1100;15;Unidades
+Agrícola Las Lomas;Melón (pulpa);1100;15;Unidades
+Agrícola Las Lomas;Papaya;1800;44;Kilogramos
+Agrícola Las Lomas;Perejil;950;115;Kilogramos
+Agrícola Las Lomas;Remolacha;1400;53;Kilogramos
+Agrícola Las Lomas;Yuca;700;100;Kilogramos
+Agrícola San Pedro;Albahaca;750;75;Kilogramos
+Agrícola San Pedro;Banano;1100;180;Kilogramos
+Agrícola San Pedro;Brócoli;800;128;Kilogramos
+Agrícola San Pedro;Chile Dulce;3200;43;Unidades
+Agrícola San Pedro;Culantro;1200;91;Kilogramos
+Agrícola San Pedro;Oreganito;950;31;Kilogramos
+Agrícola San Pedro;Perejil;1200;46;Kilogramos
+Agrícola San Pedro;Pimiento;700;111;Kilogramos
+Agrícola San Pedro;Piña;900;58;Unidades
+Agrícola San Pedro;Plátano verde;650;161;Kilogramos
+Agrícola San Pedro;Remolacha;2000;157;Kilogramos
+Agrícola San Pedro;Repollo;700;116;Kilogramos
+Agrícola San Pedro;Rábano;650;117;Kilogramos
+Agrícola San Pedro;Sandía;1500;38;Unidades
+Agrícola San Pedro;Zanahoria;1400;174;Kilogramos
+Agrícola San Rafael;Arracache;600;178;Kilogramos
+Agrícola San Rafael;Ayote;800;96;Kilogramos
+Agrícola San Rafael;Camote;1200;180;Kilogramos
+Agrícola San Rafael;Chayote;2200;158;Kilogramos
+Agrícola San Rafael;Coco;1700;32;Unidades
+Agrícola San Rafael;Coliflor;1400;130;Kilogramos
+Agrícola San Rafael;Durazno;1200;34;Kilogramos
+Agrícola San Rafael;Elote;700;133;Kilogramos
+Agrícola San Rafael;Limón;1800;164;Kilogramos
+Agrícola San Rafael;Melón (pulpa);1100;37;Unidades
+Agrícola San Rafael;Papa;500;31;Kilogramos
+Agrícola San Rafael;Papaya (unidad);1100;25;Unidades
+Agrícola San Rafael;Pera;1100;78;Kilogramos
+Agrícola San Rafael;Pitahaya;1100;58;Unidades
+Agrícola San Rafael;Piña (pulpa);1300;25;Unidades
+Agrícola Verde Vivo;Acelga;1100;76;Kilogramos
+Agrícola Verde Vivo;Aguacate;2500;38;Unidades
+Agrícola Verde Vivo;Arracache;950;162;Kilogramos
+Agrícola Verde Vivo;Banano;1400;128;Kilogramos
+Agrícola Verde Vivo;Brócoli;1200;91;Kilogramos
+Agrícola Verde Vivo;Durazno;500;43;Kilogramos
+Agrícola Verde Vivo;Espinaca;2200;162;Kilogramos
+Agrícola Verde Vivo;Guanábana;900;124;Kilogramos
+Agrícola Verde Vivo;Limón;1400;141;Kilogramos
+Agrícola Verde Vivo;Manzana;1200;110;Kilogramos
+Agrícola Verde Vivo;Maracuyá (bolsa);1600;82;Kilogramos
+Agrícola Verde Vivo;Perejil;500;152;Kilogramos
+Agrícola Verde Vivo;Plátano verde;1100;168;Kilogramos
+Agrícola Verde Vivo;Zanahoria;850;41;Kilogramos
+Agrícola Verde Vivo;Ñame;900;141;Kilogramos
+EcoCampo CR;Arracache;1800;124;Kilogramos
+EcoCampo CR;Ayote;500;167;Kilogramos
+EcoCampo CR;Banano;900;144;Kilogramos
+EcoCampo CR;Camote;1600;59;Kilogramos
+EcoCampo CR;Cúrcuma;750;79;Kilogramos
+EcoCampo CR;Espinaca;600;72;Kilogramos
+EcoCampo CR;Mango;900;89;Kilogramos
+EcoCampo CR;Maracuyá (bolsa);1100;119;Kilogramos
+EcoCampo CR;Papaya (unidad);1900;44;Unidades
+EcoCampo CR;Pera;850;36;Kilogramos
+EcoCampo CR;Pimiento;2000;126;Kilogramos
+EcoCampo CR;Pitahaya;2200;40;Unidades
+EcoCampo CR;Plátano verde;500;110;Kilogramos
+EcoCampo CR;Uva;1800;157;Kilogramos
+EcoCampo CR;Ñame;1800;119;Kilogramos
+EcoFinca La Esperanza;Apio;1400;155;Kilogramos
+EcoFinca La Esperanza;Brócoli;2200;95;Kilogramos
+EcoFinca La Esperanza;Calabacín;1200;49;Kilogramos
+EcoFinca La Esperanza;Chile Dulce;4800;77;Unidades
+EcoFinca La Esperanza;Coliflor;700;136;Kilogramos
+EcoFinca La Esperanza;Espinaca;1400;43;Kilogramos
+EcoFinca La Esperanza;Fresa;1600;162;Kilogramos
+EcoFinca La Esperanza;Guayaba;850;53;Kilogramos
+EcoFinca La Esperanza;Manzana;1400;87;Kilogramos
+EcoFinca La Esperanza;Papaya;950;157;Kilogramos
+EcoFinca La Esperanza;Papaya (unidad);2500;14;Unidades
+EcoFinca La Esperanza;Pepino;950;62;Kilogramos
+EcoFinca La Esperanza;Pimiento;750;77;Kilogramos
+EcoFinca La Esperanza;Piña;1700;68;Unidades
+EcoFinca La Esperanza;Yam;1600;23;Kilogramos
+El Buen Productor;Acelga;900;114;Kilogramos
+El Buen Productor;Ajo;1400;37;Kilogramos
+El Buen Productor;Apio;850;100;Kilogramos
+El Buen Productor;Ayote;1100;60;Kilogramos
+El Buen Productor;Berenjena;2000;159;Kilogramos
+El Buen Productor;Cebollín;950;53;Kilogramos
+El Buen Productor;Culantro;500;137;Kilogramos
+El Buen Productor;Cúrcuma;1200;86;Kilogramos
+El Buen Productor;Jengibre;1600;53;Kilogramos
+El Buen Productor;Lechuga;1200;38;Kilogramos
+El Buen Productor;Pepino;900;87;Kilogramos
+El Buen Productor;Piña;1700;39;Unidades
+El Buen Productor;Plátano verde;850;149;Kilogramos
+El Buen Productor;Sandía (pulpa);1700;49;Unidades
+El Buen Productor;Yuca;700;38;Kilogramos
+Finca El Porvenir;Acelga;500;156;Kilogramos
+Finca El Porvenir;Albahaca;600;33;Kilogramos
+Finca El Porvenir;Apio;900;112;Kilogramos
+Finca El Porvenir;Banano;650;122;Kilogramos
+Finca El Porvenir;Berenjena;2200;49;Kilogramos
+Finca El Porvenir;Coco;1900;21;Unidades
+Finca El Porvenir;Coliflor;800;97;Kilogramos
+Finca El Porvenir;Fresa;600;84;Kilogramos
+Finca El Porvenir;Lechuga;750;90;Kilogramos
+Finca El Porvenir;Mango;2200;38;Kilogramos
+Finca El Porvenir;Papaya;1100;140;Kilogramos
+Finca El Porvenir;Perejil;1100;52;Kilogramos
+Finca El Porvenir;Uva;2200;132;Kilogramos
+Finca El Porvenir;Yam;500;166;Kilogramos
+Finca El Porvenir;Ñame;2200;46;Kilogramos
+Finca Los Abuelos;Ajo;850;83;Kilogramos
+Finca Los Abuelos;Arracache;1200;53;Kilogramos
+Finca Los Abuelos;Brócoli;1800;90;Kilogramos
+Finca Los Abuelos;Culantro;600;20;Kilogramos
+Finca Los Abuelos;Durazno;750;30;Kilogramos
+Finca Los Abuelos;Elote;1800;163;Kilogramos
+Finca Los Abuelos;Espinaca;500;48;Kilogramos
+Finca Los Abuelos;Mango;700;110;Kilogramos
+Finca Los Abuelos;Mora;2000;161;Kilogramos
+Finca Los Abuelos;Papa;750;130;Kilogramos
+Finca Los Abuelos;Pimiento;950;61;Kilogramos
+Finca Los Abuelos;Remolacha;1100;113;Kilogramos
+Finca Los Abuelos;Repollo;600;111;Kilogramos
+Finca Los Abuelos;Yam;600;114;Kilogramos
+Finca Los Abuelos;Ñame;650;58;Kilogramos
+Finca Los Volcanes;Aguacate;1100;23;Unidades
+Finca Los Volcanes;Banano;1800;169;Kilogramos
+Finca Los Volcanes;Coco;2500;19;Unidades
+Finca Los Volcanes;Fresa;950;55;Kilogramos
+Finca Los Volcanes;Guanábana;1600;88;Kilogramos
+Finca Los Volcanes;Limón;900;103;Kilogramos
+Finca Los Volcanes;Mandarina;600;100;Kilogramos
+Finca Los Volcanes;Manzana;1600;112;Kilogramos
+Finca Los Volcanes;Maracuyá (bolsa);900;163;Kilogramos
+Finca Los Volcanes;Melón (pulpa);900;24;Unidades
+Finca Los Volcanes;Naranja;800;138;Kilogramos
+Finca Los Volcanes;Papaya;2200;121;Kilogramos
+Finca Los Volcanes;Piña;2200;27;Unidades
+Finca Los Volcanes;Piña (pulpa);1900;23;Unidades
+Finca Los Volcanes;Uva;950;169;Kilogramos
+Finca Mis Raíces;Banano;750;60;Kilogramos
+Finca Mis Raíces;Culantro;750;164;Kilogramos
+Finca Mis Raíces;Elote;750;27;Kilogramos
+Finca Mis Raíces;Fresa;650;33;Kilogramos
+Finca Mis Raíces;Guanábana;850;116;Kilogramos
+Finca Mis Raíces;Lechuga;500;66;Kilogramos
+Finca Mis Raíces;Maracuyá;1200;109;Kilogramos
+Finca Mis Raíces;Naranja;950;99;Kilogramos
+Finca Mis Raíces;Oreganito;650;155;Kilogramos
+Finca Mis Raíces;Perejil;1600;37;Kilogramos
+Finca Mis Raíces;Remolacha;1400;99;Kilogramos
+Finca Mis Raíces;Repollo;1200;165;Kilogramos
+Finca Mis Raíces;Sandía;900;21;Unidades
+Finca Mis Raíces;Zanahoria;1800;136;Kilogramos
+Finca Mis Raíces;Ñame;1200;60;Kilogramos
+Finca Sol Naciente;Aguacate;2500;49;Unidades
+Finca Sol Naciente;Coco;1500;29;Unidades
+Finca Sol Naciente;Durazno;1100;134;Kilogramos
+Finca Sol Naciente;Fresa;1400;80;Kilogramos
+Finca Sol Naciente;Guayaba;750;172;Kilogramos
+Finca Sol Naciente;Limón;800;132;Kilogramos
+Finca Sol Naciente;Mandarina;600;125;Kilogramos
+Finca Sol Naciente;Mango;2000;138;Kilogramos
+Finca Sol Naciente;Maracuyá;800;66;Kilogramos
+Finca Sol Naciente;Naranja;600;106;Kilogramos
+Finca Sol Naciente;Papaya;900;156;Kilogramos
+Finca Sol Naciente;Papaya (unidad);2500;67;Unidades
+Finca Sol Naciente;Piña;2200;19;Unidades
+Finca Sol Naciente;Sandía;1100;42;Unidades
+Finca Sol Naciente;Uva;850;114;Kilogramos
+Finca Tierra Fértil;Acelga;1100;150;Kilogramos
+Finca Tierra Fértil;Aguacate;2200;15;Unidades
+Finca Tierra Fértil;Ajo;2000;50;Kilogramos
+Finca Tierra Fértil;Apio;750;93;Kilogramos
+Finca Tierra Fértil;Brócoli;2000;144;Kilogramos
+Finca Tierra Fértil;Culantro;900;60;Kilogramos
+Finca Tierra Fértil;Guayaba;950;160;Kilogramos
+Finca Tierra Fértil;Manzana;900;136;Kilogramos
+Finca Tierra Fértil;Melón (pulpa);900;45;Unidades
+Finca Tierra Fértil;Papaya (unidad);1700;45;Unidades
+Finca Tierra Fértil;Remolacha;750;147;Kilogramos
+Finca Tierra Fértil;Sandía (pulpa);2500;40;Unidades
+Finca Tierra Fértil;Tomate;700;27;Kilogramos
+Finca Tierra Fértil;Uva;950;126;Kilogramos
+Finca Tierra Fértil;Yam;900;49;Kilogramos
+Frutas del Sol;Aguacate;900;70;Unidades
+Frutas del Sol;Banano;750;141;Kilogramos
+Frutas del Sol;Durazno;650;30;Kilogramos
+Frutas del Sol;Guanábana;500;158;Kilogramos
+Frutas del Sol;Guayaba;1200;106;Kilogramos
+Frutas del Sol;Limón;750;81;Kilogramos
+Frutas del Sol;Mango;700;164;Kilogramos
+Frutas del Sol;Melón;2200;26;Unidades
+Frutas del Sol;Mora;650;140;Kilogramos
+Frutas del Sol;Papaya;1400;77;Kilogramos
+Frutas del Sol;Papaya (unidad);900;49;Unidades
+Frutas del Sol;Pitahaya;1500;63;Unidades
+Frutas del Sol;Sandía;1500;39;Unidades
+Frutas del Sol;Sandía (pulpa);2200;27;Unidades
+Frutas del Sol;Uva;500;83;Kilogramos
+Huerta Don Memo;Aguacate;900;54;Unidades
+Huerta Don Memo;Albahaca;750;119;Kilogramos
+Huerta Don Memo;Limón;1400;45;Kilogramos
+Huerta Don Memo;Manzana;1400;159;Kilogramos
+Huerta Don Memo;Melón (pulpa);2500;33;Unidades
+Huerta Don Memo;Mora;1800;170;Kilogramos
+Huerta Don Memo;Naranja;600;97;Kilogramos
+Huerta Don Memo;Oreganito;700;145;Kilogramos
+Huerta Don Memo;Pepino;2200;49;Kilogramos
+Huerta Don Memo;Pimiento;1800;91;Kilogramos
+Huerta Don Memo;Pitahaya;1500;64;Unidades
+Huerta Don Memo;Remolacha;1400;75;Kilogramos
+Huerta Don Memo;Repollo;2000;133;Kilogramos
+Huerta Don Memo;Yuca;700;80;Kilogramos
+Huerta Don Memo;Zanahoria;750;126;Kilogramos
+Huerta La Amistad;Ayote;750;80;Kilogramos
+Huerta La Amistad;Brócoli;700;155;Kilogramos
+Huerta La Amistad;Cebolla;800;39;Kilogramos
+Huerta La Amistad;Coco;1300;58;Unidades
+Huerta La Amistad;Guayaba;1100;106;Kilogramos
+Huerta La Amistad;Lechuga Romana;850;109;Kilogramos
+Huerta La Amistad;Manzana;2000;164;Kilogramos
+Huerta La Amistad;Melón;1900;56;Unidades
+Huerta La Amistad;Papaya;700;57;Kilogramos
+Huerta La Amistad;Piña;1500;31;Unidades
+Huerta La Amistad;Plátano verde;650;65;Kilogramos
+Huerta La Amistad;Remolacha;950;70;Kilogramos
+Huerta La Amistad;Repollo;800;174;Kilogramos
+Huerta La Amistad;Sandía;2200;65;Unidades
+Huerta La Amistad;Sandía (pulpa);2500;39;Unidades
+Huerta La Cascada;Apio;850;118;Kilogramos
+Huerta La Cascada;Ayote;1200;133;Kilogramos
+Huerta La Cascada;Brócoli;500;47;Kilogramos
+Huerta La Cascada;Camote;900;57;Kilogramos
+Huerta La Cascada;Chayote;800;152;Kilogramos
+Huerta La Cascada;Cúrcuma;2000;126;Kilogramos
+Huerta La Cascada;Fresa;2000;54;Kilogramos
+Huerta La Cascada;Mango;2000;60;Kilogramos
+Huerta La Cascada;Oreganito;900;51;Kilogramos
+Huerta La Cascada;Pepino;2200;122;Kilogramos
+Huerta La Cascada;Pera;1800;76;Kilogramos
+Huerta La Cascada;Pitahaya;2800;48;Unidades
+Huerta La Cascada;Plátano verde;1800;160;Kilogramos
+Huerta La Cascada;Rábano;2000;32;Kilogramos
+Huerta La Cascada;Zanahoria;2000;155;Kilogramos
+Huerta Las Brisas;Ajo;2000;38;Kilogramos
+Huerta Las Brisas;Ayote;850;128;Kilogramos
+Huerta Las Brisas;Berenjena;700;159;Kilogramos
+Huerta Las Brisas;Coliflor;650;60;Kilogramos
+Huerta Las Brisas;Elote;2200;94;Kilogramos
+Huerta Las Brisas;Fresa;1100;92;Kilogramos
+Huerta Las Brisas;Jengibre;900;64;Kilogramos
+Huerta Las Brisas;Limón;800;20;Kilogramos
+Huerta Las Brisas;Maracuyá (bolsa);900;87;Kilogramos
+Huerta Las Brisas;Mora;1800;135;Kilogramos
+Huerta Las Brisas;Oreganito;600;79;Kilogramos
+Huerta Las Brisas;Papaya (unidad);2800;14;Unidades
+Huerta Las Brisas;Piña;1500;26;Unidades
+Huerta Las Brisas;Plátano verde;900;58;Kilogramos
+Huerta Las Brisas;Sandía;1500;50;Unidades
+Huerta Santa María;Arracache;500;170;Kilogramos
+Huerta Santa María;Ayote;650;35;Kilogramos
+Huerta Santa María;Calabacín;650;106;Kilogramos
+Huerta Santa María;Cebolla;2000;50;Kilogramos
+Huerta Santa María;Cúrcuma;850;99;Kilogramos
+Huerta Santa María;Espinaca;900;21;Kilogramos
+Huerta Santa María;Fresa;1200;38;Kilogramos
+Huerta Santa María;Guayaba;850;158;Kilogramos
+Huerta Santa María;Jengibre;1400;132;Kilogramos
+Huerta Santa María;Lechuga Romana;900;170;Kilogramos
+Huerta Santa María;Manzana;900;91;Kilogramos
+Huerta Santa María;Pitahaya;900;65;Unidades
+Huerta Santa María;Remolacha;900;37;Kilogramos
+Huerta Santa María;Sandía;2200;52;Unidades
+Huerta Santa María;Yuca;900;77;Kilogramos
+Los Productores del Mar;Aceite de Oliva 250ml;2800;43;Litros
+Los Productores del Mar;Ajo;500;35;Kilogramos
+Los Productores del Mar;Arroz Integral 1kg;2200;133;Kilogramos
+Los Productores del Mar;Atún fresco 500g;1100;18;Unidades
+Los Productores del Mar;Calamar 500g;1400;13;Unidades
+Los Productores del Mar;Camarón 500g;2400;72;Unidades
+Los Productores del Mar;Corvina 500g;2400;65;Unidades
+Los Productores del Mar;Filete de Pescado 500g;4200;74;Unidades
+Los Productores del Mar;Limón;1800;47;Kilogramos
+Los Productores del Mar;Mejillones 500g;1800;26;Unidades
+Los Productores del Mar;Perejil;1400;151;Kilogramos
+Los Productores del Mar;Pulpo 500g;1600;66;Unidades
+Los Productores del Mar;Sal marina 500g;3200;21;Unidades
+Los Productores del Mar;Salsa tártara 250ml;3200;35;Litros
+Los Productores del Mar;Sardina 1kg (bolsa);1100;16;Unidades
+Orgánicos Pura Vida;Arroz Integral 1kg;1600;160;Kilogramos
+Orgánicos Pura Vida;Azúcar Morena 1kg;1200;102;Kilogramos
+Orgánicos Pura Vida;Cacao en polvo 250g;1100;37;Unidades
+Orgánicos Pura Vida;Chía 250g;2200;93;Kilogramos
+Orgánicos Pura Vida;Frijol Negro 1kg;500;88;Kilogramos
+Orgánicos Pura Vida;Frijol Rojo 1kg;1200;125;Kilogramos
+Orgánicos Pura Vida;Garbanzos 1kg;2000;91;Kilogramos
+Orgánicos Pura Vida;Granola 500g;1100;68;Unidades
+Orgánicos Pura Vida;Harina de Maíz 1kg;700;61;Kilogramos
+Orgánicos Pura Vida;Leche de Almendra 1L;3200;43;Litros
+Orgánicos Pura Vida;Lenteja 1kg;600;64;Kilogramos
+Orgánicos Pura Vida;Linaza 250g;800;169;Kilogramos
+Orgánicos Pura Vida;Mantequilla de maní 250g;900;66;Unidades
+Orgánicos Pura Vida;Sal Rosada 500g;1800;60;Unidades
+Orgánicos Pura Vida;Té verde 25 sobres;2000;70;Unidades
+Orgánicos del Pacífico;Avena 1kg;1600;92;Kilogramos
+Orgánicos del Pacífico;Azúcar Morena 1kg;600;105;Kilogramos
+Orgánicos del Pacífico;Cacao en polvo 250g;1100;26;Unidades
+Orgánicos del Pacífico;Café en grano 500g;1400;99;Kilogramos
+Orgánicos del Pacífico;Chía 250g;800;113;Kilogramos
+Orgánicos del Pacífico;Frijol Negro 1kg;600;83;Kilogramos
+Orgánicos del Pacífico;Frijol Rojo 1kg;750;105;Kilogramos
+Orgánicos del Pacífico;Garbanzos 1kg;1400;92;Kilogramos
+Orgánicos del Pacífico;Granola 500g;1100;50;Unidades
+Orgánicos del Pacífico;Harina de Maíz 1kg;950;174;Kilogramos
+Orgánicos del Pacífico;Lenteja 1kg;2000;132;Kilogramos
+Orgánicos del Pacífico;Linaza 250g;1600;124;Kilogramos
+Orgánicos del Pacífico;Mantequilla de maní 250g;3500;58;Unidades
+Orgánicos del Pacífico;Sal Rosada 500g;1100;79;Unidades
+Orgánicos del Pacífico;Té verde 25 sobres;4800;51;Unidades
+Orgánicos del Valle;Avena 1kg;950;136;Kilogramos
+Orgánicos del Valle;Azúcar Morena 1kg;1100;128;Kilogramos
+Orgánicos del Valle;Cacao en polvo 250g;1400;15;Unidades
+Orgánicos del Valle;Café en grano 500g;600;100;Kilogramos
+Orgánicos del Valle;Chía 250g;900;62;Kilogramos
+Orgánicos del Valle;Frijol Negro 1kg;2000;160;Kilogramos
+Orgánicos del Valle;Frijol Rojo 1kg;850;95;Kilogramos
+Orgánicos del Valle;Garbanzos 1kg;1800;144;Kilogramos
+Orgánicos del Valle;Granola 500g;900;57;Unidades
+Orgánicos del Valle;Harina de Maíz 1kg;2200;59;Kilogramos
+Orgánicos del Valle;Leche de Almendra 1L;1200;15;Litros
+Orgánicos del Valle;Lenteja 1kg;700;32;Kilogramos
+Orgánicos del Valle;Quinoa 500g;1600;35;Kilogramos
+Orgánicos del Valle;Sal Rosada 500g;2400;35;Unidades
+Orgánicos del Valle;Té verde 25 sobres;1200;56;Unidades
+Productores El Bosque;Aguacate;1100;37;Unidades
+Productores El Bosque;Camote;700;164;Kilogramos
+Productores El Bosque;Cebollín;1200;23;Kilogramos
+Productores El Bosque;Fresa;950;177;Kilogramos
+Productores El Bosque;Lechuga Romana;1800;114;Kilogramos
+Productores El Bosque;Limón;2200;139;Kilogramos
+Productores El Bosque;Naranja;700;97;Kilogramos
+Productores El Bosque;Perejil;600;108;Kilogramos
+Productores El Bosque;Piña (pulpa);2800;59;Unidades
+Productores El Bosque;Plátano verde;1800;171;Kilogramos
+Productores El Bosque;Remolacha;750;131;Kilogramos
+Productores El Bosque;Repollo;800;153;Kilogramos
+Productores El Bosque;Rábano;650;149;Kilogramos
+Productores El Bosque;Yam;1400;137;Kilogramos
+Productores El Bosque;Zanahoria;1800;145;Kilogramos
+Productores El Manantial;Bizcocho Casero;1800;11;Unidades
+Productores El Manantial;Café Molido 250g;1400;98;Kilogramos
+Productores El Manantial;Chocolate artesanal 200g;1100;41;Unidades
+Productores El Manantial;Dulce de Leche 250g;1200;52;Litros
+Productores El Manantial;Empanadas (paquete);5500;16;Unidades
+Productores El Manantial;Huevos criollos (Docena);1600;12;Unidades
+Productores El Manantial;Leche Descremada 1L;1800;47;Litros
+Productores El Manantial;Mantequilla Artesanal;950;109;Kilogramos
+Productores El Manantial;Mermelada de Fresa 250g;1100;63;Unidades
+Productores El Manantial;Miel 250ml;1400;59;Unidades
+Productores El Manantial;Natilla 500g;900;77;Kilogramos
+Productores El Manantial;Pan Casero;5500;66;Unidades
+Productores El Manantial;Pan Integral;1800;43;Unidades
+Productores El Manantial;Queso Fresco 500g;1600;157;Kilogramos
+Productores El Manantial;Yogurt Natural 1L;2000;22;Litros
+Productores La Montaña;Café Molido 250g;950;107;Kilogramos
+Productores La Montaña;Café Molido 500g;750;115;Kilogramos
+Productores La Montaña;Empanadas (paquete);4200;41;Unidades
+Productores La Montaña;Huevos criollos (Docena);4800;28;Unidades
+Productores La Montaña;Jalea de Guayaba;3200;33;Unidades
+Productores La Montaña;Leche Descremada 1L;1500;50;Litros
+Productores La Montaña;Leche Entera 1L;1200;48;Litros
+Productores La Montaña;Mantequilla Artesanal;800;149;Kilogramos
+Productores La Montaña;Mermelada de Fresa 250g;2800;75;Unidades
+Productores La Montaña;Miel 250ml;2000;28;Unidades
+Productores La Montaña;Miel 500ml;1600;72;Unidades
+Productores La Montaña;Natilla 500g;700;95;Kilogramos
+Productores La Montaña;Pan Casero;4200;22;Unidades
+Productores La Montaña;Pan Integral;2400;8;Unidades
+Productores La Montaña;Yogurt Natural 1L;1200;53;Litros
+Productores Las Rosas;Bizcocho Casero;4200;68;Unidades
+Productores Las Rosas;Café Molido 250g;750;134;Kilogramos
+Productores Las Rosas;Cuajada 500g;1200;45;Kilogramos
+Productores Las Rosas;Dulce de Leche 250g;2800;39;Litros
+Productores Las Rosas;Empanadas (paquete);1400;60;Unidades
+Productores Las Rosas;Huevos (Docena);3200;57;Unidades
+Productores Las Rosas;Huevos criollos (Docena);2400;12;Unidades
+Productores Las Rosas;Jalea de Guayaba;3500;27;Unidades
+Productores Las Rosas;Leche Entera 1L;3200;32;Litros
+Productores Las Rosas;Mantequilla Artesanal;600;101;Kilogramos
+Productores Las Rosas;Mermelada de Fresa 250g;1200;72;Unidades
+Productores Las Rosas;Miel 250ml;4200;38;Unidades
+Productores Las Rosas;Pan Integral;1800;32;Unidades
+Productores Las Rosas;Queso Fresco 500g;1600;118;Kilogramos
+Productores Las Rosas;Rosquillas;1800;78;Unidades
+Productores del Cerro;Ajo;1600;30;Kilogramos
+Productores del Cerro;Apio;850;97;Kilogramos
+Productores del Cerro;Ayote;2000;39;Kilogramos
+Productores del Cerro;Espinaca;900;148;Kilogramos
+Productores del Cerro;Fresa;750;117;Kilogramos
+Productores del Cerro;Mango;1200;167;Kilogramos
+Productores del Cerro;Maracuyá;850;55;Kilogramos
+Productores del Cerro;Melón;2200;21;Unidades
+Productores del Cerro;Papaya (unidad);1900;17;Unidades
+Productores del Cerro;Pepino;950;94;Kilogramos
+Productores del Cerro;Perejil;500;147;Kilogramos
+Productores del Cerro;Piña;900;10;Unidades
+Productores del Cerro;Remolacha;1800;24;Kilogramos
+Productores del Cerro;Sandía;1500;35;Unidades
+Productores del Cerro;Ñame;1400;38;Kilogramos
+Valle Verde CR;Acelga;950;22;Kilogramos
+Valle Verde CR;Aguacate;1900;46;Unidades
+Valle Verde CR;Albahaca;1100;70;Kilogramos
+Valle Verde CR;Ayote;2200;93;Kilogramos
+Valle Verde CR;Camote;1100;128;Kilogramos
+Valle Verde CR;Cebollín;700;80;Kilogramos
+Valle Verde CR;Chayote;950;136;Kilogramos
+Valle Verde CR;Coco;900;68;Unidades
+Valle Verde CR;Cúrcuma;2000;108;Kilogramos
+Valle Verde CR;Espinaca;1600;166;Kilogramos
+Valle Verde CR;Lechuga Romana;1600;143;Kilogramos
+Valle Verde CR;Limón;900;175;Kilogramos
+Valle Verde CR;Mango;1400;76;Kilogramos
+Valle Verde CR;Papa;500;121;Kilogramos
+Valle Verde CR;Yam;1100;95;Kilogramos
